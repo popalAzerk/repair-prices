@@ -1,0 +1,6492 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tarifs de réparation — Support Apple</title>
+<style>
+  :root{
+    --bg:#f5f5f7;
+    --surface:#ffffff;
+    --surface-2:#fbfbfd;
+    --text:#1d1d1f;
+    --text-secondary:#6e6e73;
+    --accent:#0071e3;
+    --accent-hover:#0077ed;
+    --ac-red:#d70015;          /* AppleCare figures + plan toggle */
+    --border:#d2d2d7;
+    --border-soft:#e8e8ed;
+    --shadow: 0 1px 2px rgba(0,0,0,.04), 0 2px 12px rgba(0,0,0,.04);
+    --shadow-hover: 0 4px 16px rgba(0,0,0,.08), 0 1px 3px rgba(0,0,0,.06);
+    color-scheme: light dark;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#000000; --surface:#1d1d1f; --surface-2:#161617; --text:#f5f5f7;
+      --text-secondary:#98989d; --accent:#2997ff; --accent-hover:#4facff;
+      --ac-red:#ff453a;
+      --border:#3d3d3f; --border-soft:#2c2c2e;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 2px 12px rgba(0,0,0,.3);
+      --shadow-hover: 0 4px 20px rgba(0,0,0,.5), 0 1px 3px rgba(0,0,0,.4);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#000000; --surface:#1d1d1f; --surface-2:#161617; --text:#f5f5f7;
+    --text-secondary:#98989d; --accent:#2997ff; --accent-hover:#4facff;
+    --ac-red:#ff453a;
+    --border:#3d3d3f; --border-soft:#2c2c2e;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 2px 12px rgba(0,0,0,.3);
+    --shadow-hover: 0 4px 20px rgba(0,0,0,.5), 0 1px 3px rgba(0,0,0,.4);
+  }
+  :root[data-theme="light"]{
+    --bg:#f5f5f7; --surface:#ffffff; --surface-2:#fbfbfd; --text:#1d1d1f;
+    --text-secondary:#6e6e73; --accent:#0071e3; --accent-hover:#0077ed;
+    --ac-red:#d70015;
+    --border:#d2d2d7; --border-soft:#e8e8ed;
+    --shadow: 0 1px 2px rgba(0,0,0,.04), 0 2px 12px rgba(0,0,0,.04);
+    --shadow-hover: 0 4px 16px rgba(0,0,0,.08), 0 1px 3px rgba(0,0,0,.06);
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system,"SF Pro Display","SF Pro Text",BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+
+  /* ---------- Nav ---------- */
+  .topbar{
+    position:sticky; top:0; z-index:50;
+    backdrop-filter:saturate(180%) blur(20px);
+    -webkit-backdrop-filter:saturate(180%) blur(20px);
+    background:color-mix(in srgb, var(--bg) 72%, transparent);
+    border-bottom:1px solid var(--border-soft);
+  }
+  .topbar-inner{
+    max-width:720px; margin:0 auto; padding:14px 22px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .apple-logo{width:15px; height:18px; flex-shrink:0; opacity:.92;}
+  .topbar-title{font-size:15px; font-weight:600; letter-spacing:-0.01em; color:var(--text-primary);}
+
+  .wrap{max-width:720px; margin:0 auto; padding:52px 24px 64px;}
+
+  h1{
+    font-size:36px; line-height:1.1; letter-spacing:-0.015em; font-weight:600;
+    margin:0 0 32px; text-align:center;
+  }
+
+  /* ---------- Select boxes ---------- */
+  .select-group{display:flex; flex-direction:column; gap:14px; max-width:480px; margin:0 auto;}
+  .select-box{
+    position:relative; border:1.5px solid var(--border); border-radius:12px;
+    padding:9px 42px 9px 16px; background:var(--surface);
+    transition:border-color .15s ease, box-shadow .15s ease;
+  }
+  .select-box:hover{border-color:var(--accent);}
+  .select-box:focus-within{border-color:var(--accent); box-shadow:0 0 0 4px color-mix(in srgb, var(--accent) 16%, transparent);}
+  .select-box label{display:block; font-size:12.5px; color:var(--text-secondary); margin-bottom:1px;}
+  /* The native select is stretched invisibly over the whole box so that clicking
+     anywhere - including the chevron and the label - opens it. */
+  .select-box select{
+    position:absolute; inset:0; width:100%; height:100%;
+    opacity:0; cursor:pointer; z-index:2;
+    appearance:none; -webkit-appearance:none; border:none; margin:0;
+    font-family:inherit; font-size:16px;   /* >=16px stops iOS zooming on focus */
+  }
+  .select-box select:focus{outline:none;}
+  .select-box .value{
+    font-size:19px; font-weight:600; letter-spacing:-0.01em; color:var(--text);
+    padding-top:2px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;
+  }
+  .select-box .chevron{
+    position:absolute; right:16px; top:50%; transform:translateY(-50%);
+    width:13px; height:13px; color:var(--text-secondary); pointer-events:none;
+  }
+
+  /* ---------- Content row ---------- */
+  .content-row{
+    display:flex; gap:48px; align-items:flex-start; justify-content:center;
+    max-width:640px; margin:52px auto 0; flex-wrap:wrap;
+  }
+  .device-art{
+    flex:0 0 130px; width:130px; height:130px; border-radius:20px;
+    background:#f5f5f7; overflow:hidden;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:var(--shadow);
+  }
+  /* The inline transform (set per category in JS) crops each shot to its product. */
+  .device-art img{
+    width:100%; height:100%; object-fit:cover; display:block;
+    transform-origin:center;
+  }
+  .price-panel{flex:1 1 320px; min-width:260px;}
+  .panel-title{font-size:13px; color:var(--text-secondary); margin:0 0 6px;}
+  .price-row{
+    display:flex; flex-wrap:wrap; justify-content:space-between; align-items:baseline;
+    gap:0 16px; padding:15px 0; border-bottom:1px solid var(--border-soft);
+  }
+  .price-row:last-child{border-bottom:none;}
+  .price-row .label{font-size:16px; letter-spacing:-0.005em; flex:1 1 auto;}
+  .price-row .price{font-size:16px; font-weight:600; white-space:nowrap; flex:0 0 auto;}
+  .price-row .price.na{color:var(--text-secondary); font-weight:400; font-size:13.5px;}
+  .ac-fee{color:var(--ac-red);}
+  /* Own full-width line so it never competes with the label for horizontal space. */
+  .ac-note{
+    flex:1 0 100%; text-align:right; margin-top:3px;
+    font-size:11.5px; line-height:1.3; color:var(--ac-red);
+  }
+
+  /* ---------- AppleCare plan toggle ---------- */
+  .ac-toggle{
+    display:inline-flex; gap:2px; padding:2px; margin:0 0 12px;
+    background:var(--surface-2); border:1px solid var(--border-soft);
+    border-radius:980px;
+  }
+  .ac-btn{
+    border:none; background:none; font-family:inherit; font-size:11.5px; font-weight:500;
+    padding:5px 13px; border-radius:980px; cursor:pointer;
+    color:var(--text-secondary); white-space:nowrap;
+    transition:background .15s ease, color .15s ease;
+  }
+  .ac-btn:hover:not(.active){color:var(--ac-red);}
+  .ac-btn.active{background:var(--ac-red); color:#fff;}
+
+  .disclaimer{
+    max-width:640px; margin:28px auto 0; padding:14px 4px 0;
+    font-size:12px; line-height:1.5; color:var(--text-secondary); text-align:center;
+  }
+
+  .footer{
+    text-align:center; padding:32px 24px 56px;
+    font-size:12px; color:var(--text-secondary); border-top:1px solid var(--border-soft);
+  }
+
+  ::selection{background:color-mix(in srgb, var(--accent) 30%, transparent);}
+
+  /* ---------- iPad breakpoint ---------- */
+  /* Image and prices stay side by side; the art shrinks and the panel is
+     allowed to flex below its base width so the row never wraps. */
+  @media (max-width:834px){
+    .wrap{padding:44px 20px 56px;}
+    .content-row{flex-wrap:nowrap; gap:32px; margin-top:44px;}
+    .device-art{flex:0 0 116px; width:116px; height:116px; border-radius:18px;}
+    .price-panel{flex:1 1 auto; min-width:0;}
+  }
+
+  /* ---------- iPhone breakpoint ---------- */
+  @media (max-width:480px){
+    .topbar-inner{padding:12px 16px;}
+    .wrap{padding:32px 16px 40px;}
+    h1{font-size:25px; margin-bottom:24px;}
+    .select-group{gap:10px;}
+    .select-box{padding:8px 38px 8px 14px;}
+    .select-box label{font-size:12px;}
+    .select-box .value{font-size:17px;}
+    .select-box .chevron{right:14px;}
+    .content-row{gap:16px; margin-top:32px;}
+    .device-art{flex:0 0 84px; width:84px; height:84px; border-radius:14px;}
+    .price-row{padding:11px 0; gap:10px;}
+    .price-row .label{font-size:13.5px; line-height:1.3;}
+    .price-row .price{font-size:13.5px;}
+    .ac-note{font-size:10px; margin-top:2px;}
+    .ac-btn{font-size:10.5px; padding:5px 10px;}
+    .ac-toggle{margin-bottom:10px;}
+    .price-row .price.na{font-size:12px;}
+    .disclaimer{font-size:11.5px; margin-top:24px;}
+  }
+
+  @media (max-width:360px){
+    h1{font-size:22px;}
+    .select-box .value{font-size:16px;}
+    .content-row{gap:12px;}
+    .device-art{flex:0 0 72px; width:72px; height:72px; border-radius:12px;}
+    .price-row .label{font-size:12.5px;}
+    .price-row .price{font-size:12.5px;}
+    .ac-note{font-size:9.5px;}
+    .ac-btn{font-size:9.5px; padding:4px 8px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <svg class="apple-logo" viewBox="0 0 170 170" fill="currentColor"><path d="M150.37 130.25c-2.45 5.66-5.35 10.87-8.71 15.66-4.58 6.53-8.33 11.05-11.22 13.56-4.48 4.12-9.28 6.23-14.42 6.35-3.69 0-8.14-1.05-13.32-3.18-5.19-2.12-9.96-3.17-14.32-3.17-4.57 0-9.47 1.05-14.71 3.17-5.25 2.13-9.48 3.24-12.71 3.34-4.93.21-9.84-1.96-14.74-6.51-3.13-2.73-7.05-7.41-11.76-14.04-5.06-7.08-9.22-15.29-12.47-24.65-3.48-10.09-5.22-19.86-5.22-29.32 0-10.83 2.34-20.17 7.03-28 3.68-6.28 8.58-11.24 14.71-14.88 6.13-3.64 12.76-5.5 19.9-5.62 3.92 0 9.06 1.21 15.44 3.6 6.36 2.4 10.44 3.61 12.22 3.61 1.33 0 5.85-1.42 13.53-4.25 7.26-2.63 13.39-3.72 18.4-3.27 13.6 1.1 23.83 6.46 30.65 16.09-12.16 7.37-18.18 17.69-18.06 30.93.11 10.32 3.86 18.9 11.24 25.71 3.35 3.18 7.09 5.64 11.24 7.39-.9 2.61-1.85 5.11-2.86 7.51zM119.11 5.36c0 8.09-2.96 15.64-8.86 22.64-7.12 8.32-15.72 13.13-25.05 12.37-.12-.95-.19-1.95-.19-3 0-7.77 3.39-16.09 9.4-22.89 3-3.44 6.82-6.3 11.45-8.56C110.47.98 114.84-.24 118.94.01c.14.01.14.44.17 5.35z"/></svg>
+    <span class="topbar-title">Repair Prices</span>
+  </div>
+</div>
+
+<div class="wrap">
+  <h1>Sélectionnez votre appareil</h1>
+
+  <div class="select-group">
+    <div class="select-box">
+      <label for="cat-select">Type d'appareil</label>
+      <div class="value" id="cat-value"></div>
+      <select id="cat-select" aria-label="Type d'appareil"></select>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="select-box">
+      <label for="model-select">Modèle</label>
+      <div class="value" id="model-value"></div>
+      <select id="model-select" aria-label="Modèle"></select>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+  </div>
+
+  <div class="content-row">
+    <div class="device-art" id="device-art"></div>
+    <div class="price-panel">
+      <div class="panel-title">Coût estimé du service</div>
+      <div id="price-list"></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">Tarifs de réparation — outil interne, non affilié à Apple Inc.</div>
+
+<script>
+const DATA = {
+  "iPhone": [
+    {
+      "name": "iPhone SE (2e gen)",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 339,
+          "acFee": 99
+        },
+        {
+          "label": "Écran",
+          "price": 185,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 79,
+          "acFee": 0
+        },
+        {
+          "label": "Haut-parleur",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Taptic Engine",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra arrière",
+          "price": 89,
+          "acFee": 99
+        }
+      ]
+    },
+    {
+      "name": "iPhone SE (3e gen)",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 399,
+          "acFee": 99
+        },
+        {
+          "label": "Écran",
+          "price": 185,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 79,
+          "acFee": 0
+        },
+        {
+          "label": "Haut-parleur",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Taptic Engine",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra arrière",
+          "price": 89,
+          "acFee": 99
+        }
+      ]
+    },
+    {
+      "name": "iPhone 6s",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 369,
+          "acFee": 99
+        },
+        {
+          "label": "Écran",
+          "price": 185,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 79,
+          "acFee": 0
+        },
+        {
+          "label": "Récepteur",
+          "price": "N/A"
+        },
+        {
+          "label": "Haut-parleur",
+          "price": "N/A"
+        },
+        {
+          "label": "Vibreur",
+          "price": "N/A"
+        },
+        {
+          "label": "Caméra arrière",
+          "price": 89,
+          "acFee": 99
+        }
+      ]
+    },
+    {
+      "name": "iPhone 6s Plus",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 405,
+          "acFee": 99
+        },
+        {
+          "label": "Écran",
+          "price": 209,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 79,
+          "acFee": 0
+        },
+        {
+          "label": "Récepteur",
+          "price": "N/A"
+        },
+        {
+          "label": "Haut-parleur",
+          "price": "N/A"
+        },
+        {
+          "label": "Vibreur",
+          "price": "N/A"
+        },
+        {
+          "label": "Caméra arrière",
+          "price": 109,
+          "acFee": 99
+        }
+      ]
+    },
+    {
+      "name": "iPhone 7",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 389,
+          "acFee": 99
+        },
+        {
+          "label": "Écran",
+          "price": 185,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 79,
+          "acFee": 0
+        },
+        {
+          "label": "Haut-parleur",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Taptic Engine",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra arrière",
+          "price": 89,
+          "acFee": 99
+        }
+      ]
+    },
+    {
+      "name": "iPhone 7 Plus",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 419,
+          "acFee": 99
+        },
+        {
+          "label": "Écran",
+          "price": 209,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 79,
+          "acFee": 0
+        },
+        {
+          "label": "Haut-parleur",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Taptic Engine",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra arrière",
+          "price": 109,
+          "acFee": 99
+        }
+      ]
+    },
+    {
+      "name": "iPhone 8",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 419,
+          "acFee": 99
+        },
+        {
+          "label": "Écran",
+          "price": 185,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 79,
+          "acFee": 0
+        },
+        {
+          "label": "Taptic Engine",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra arrière",
+          "price": 89,
+          "acFee": 99
+        }
+      ]
+    },
+    {
+      "name": "iPhone 8 Plus",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 419,
+          "acFee": 99
+        },
+        {
+          "label": "Écran",
+          "price": 209,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 79,
+          "acFee": 0
+        },
+        {
+          "label": "Taptic Engine",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra arrière",
+          "price": 109,
+          "acFee": 99
+        }
+      ]
+    },
+    {
+      "name": "iPhone X",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 549,
+          "acFee": 99
+        },
+        {
+          "label": "Écran",
+          "price": 339,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 99,
+          "acFee": 0
+        },
+        {
+          "label": "Haut-parleur",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Taptic Engine",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra arrière",
+          "price": 109,
+          "acFee": 99
+        },
+        {
+          "label": "TrueDepth",
+          "price": 209,
+          "acFee": 99
+        }
+      ]
+    },
+    {
+      "name": "iPhone XR",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 419,
+          "acFee": 99
+        },
+        {
+          "label": "Écran",
+          "price": 239,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 99,
+          "acFee": 0
+        },
+        {
+          "label": "Haut-parleur",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Taptic Engine",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra arrière",
+          "price": 109,
+          "acFee": 99
+        },
+        {
+          "label": "TrueDepth",
+          "price": 209,
+          "acFee": 99
+        }
+      ]
+    },
+    {
+      "name": "iPhone XS",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 549,
+          "acFee": 99
+        },
+        {
+          "label": "Écran",
+          "price": 339,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 99,
+          "acFee": 0
+        },
+        {
+          "label": "Haut-parleur",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Taptic Engine",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra arrière",
+          "price": 109,
+          "acFee": 99
+        },
+        {
+          "label": "TrueDepth",
+          "price": 209,
+          "acFee": 99
+        }
+      ]
+    },
+    {
+      "name": "iPhone XS Max",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 729,
+          "acFee": 99
+        },
+        {
+          "label": "Écran",
+          "price": 405,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 99,
+          "acFee": 0
+        },
+        {
+          "label": "Haut-parleur",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Taptic Engine",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra arrière",
+          "price": 109,
+          "acFee": 99
+        },
+        {
+          "label": "TrueDepth",
+          "price": 209,
+          "acFee": 99
+        }
+      ]
+    },
+    {
+      "name": "iPhone 11",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 419,
+          "acFee": 99
+        },
+        {
+          "label": "Écran",
+          "price": 239,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 99,
+          "acFee": 0
+        },
+        {
+          "label": "Haut-parleur",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Taptic Engine",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra arrière",
+          "price": 109,
+          "acFee": 99
+        },
+        {
+          "label": "TrueDepth",
+          "price": 209,
+          "acFee": 99
+        }
+      ]
+    },
+    {
+      "name": "iPhone 11 Pro",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 539,
+          "acFee": 99
+        },
+        {
+          "label": "Écran",
+          "price": 339,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 99,
+          "acFee": 0
+        },
+        {
+          "label": "Haut-parleur",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Taptic Engine",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra arrière",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "TrueDepth",
+          "price": 209,
+          "acFee": 99
+        }
+      ]
+    },
+    {
+      "name": "iPhone 11 Pro Max",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 729,
+          "acFee": 99
+        },
+        {
+          "label": "Écran",
+          "price": 405,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 99,
+          "acFee": 0
+        },
+        {
+          "label": "Haut-parleur",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Taptic Engine",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra arrière",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "TrueDepth",
+          "price": 209,
+          "acFee": 99
+        }
+      ]
+    },
+    {
+      "name": "iPhone 12 mini",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 419,
+          "acFee": 99
+        },
+        {
+          "label": "Système arrière",
+          "price": 349,
+          "acFee": 99
+        },
+        {
+          "label": "Écran",
+          "price": 269,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 99,
+          "acFee": 0
+        },
+        {
+          "label": "Haut-parleur",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Taptic Engine",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra arrière",
+          "price": 199,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra TrueDepth",
+          "price": 209,
+          "acFee": 99
+        }
+      ]
+    },
+    {
+      "name": "iPhone 12",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 499,
+          "acFee": 99
+        },
+        {
+          "label": "Système arrière",
+          "price": 399,
+          "acFee": 99
+        },
+        {
+          "label": "Écran",
+          "price": 339,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 99,
+          "acFee": 0
+        },
+        {
+          "label": "Haut-parleur",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Taptic Engine",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra arrière",
+          "price": 199,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra TrueDepth",
+          "price": 209,
+          "acFee": 99
+        }
+      ]
+    },
+    {
+      "name": "iPhone 12 Pro",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 549,
+          "acFee": 99
+        },
+        {
+          "label": "Système arrière",
+          "price": 529,
+          "acFee": 99
+        },
+        {
+          "label": "Écran",
+          "price": 339,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 99,
+          "acFee": 0
+        },
+        {
+          "label": "Haut-parleur",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Taptic Engine",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra arrière",
+          "price": 229,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra TrueDepth",
+          "price": 209,
+          "acFee": 99
+        }
+      ]
+    },
+    {
+      "name": "iPhone 12 Pro Max",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 729,
+          "acFee": 99
+        },
+        {
+          "label": "Système arrière",
+          "price": 599,
+          "acFee": 99
+        },
+        {
+          "label": "Écran",
+          "price": 405,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 99,
+          "acFee": 0
+        },
+        {
+          "label": "Haut-parleur",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Taptic Engine",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra arrière",
+          "price": 229,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra TrueDepth",
+          "price": 209,
+          "acFee": 99
+        }
+      ]
+    },
+    {
+      "name": "iPhone 13 mini",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 419,
+          "acFee": 99
+        },
+        {
+          "label": "Système arrière",
+          "price": 349,
+          "acFee": 99
+        },
+        {
+          "label": "Écran",
+          "price": 269,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 99,
+          "acFee": 0
+        },
+        {
+          "label": "Haut-parleur supérieur",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Haut-parleur inférieur",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Taptic Engine",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra arrière",
+          "price": 199,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra TrueDepth",
+          "price": 269,
+          "acFee": 99
+        }
+      ]
+    },
+    {
+      "name": "iPhone 13",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 499,
+          "acFee": 99
+        },
+        {
+          "label": "Système arrière",
+          "price": 399,
+          "acFee": 99
+        },
+        {
+          "label": "Écran",
+          "price": 339,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 99,
+          "acFee": 0
+        },
+        {
+          "label": "Haut-parleur supérieur",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Haut-parleur inférieur",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Taptic Engine",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra arrière",
+          "price": 199,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra TrueDepth",
+          "price": 299,
+          "acFee": 99
+        }
+      ]
+    },
+    {
+      "name": "iPhone 13 Pro",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 549,
+          "acFee": 99
+        },
+        {
+          "label": "Système arrière",
+          "price": 529,
+          "acFee": 99
+        },
+        {
+          "label": "Écran",
+          "price": 339,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 99,
+          "acFee": 0
+        },
+        {
+          "label": "Haut-parleur supérieur",
+          "price": 165,
+          "acFee": 99
+        },
+        {
+          "label": "Haut-parleur inférieur",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Taptic Engine",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra arrière",
+          "price": 229,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra TrueDepth",
+          "price": 299,
+          "acFee": 99
+        }
+      ]
+    },
+    {
+      "name": "iPhone 13 Pro Max",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 729,
+          "acFee": 99
+        },
+        {
+          "label": "Système arrière",
+          "price": 599,
+          "acFee": 99
+        },
+        {
+          "label": "Écran",
+          "price": 405,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 99,
+          "acFee": 0
+        },
+        {
+          "label": "Haut-parleur supérieur",
+          "price": 165,
+          "acFee": 99
+        },
+        {
+          "label": "Haut-parleur inférieur",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Taptic Engine",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra arrière",
+          "price": 229,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra TrueDepth",
+          "price": 299,
+          "acFee": 99
+        }
+      ]
+    },
+    {
+      "name": "iPhone 14",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 549,
+          "acFee": 99
+        },
+        {
+          "label": "Système central",
+          "price": 459,
+          "acFee": 99
+        },
+        {
+          "label": "Écran",
+          "price": 339,
+          "acFee": 29
+        },
+        {
+          "label": "Verre arrière",
+          "price": 169,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        },
+        {
+          "label": "Haut-parleur supérieur",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Haut-parleur inférieur",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Taptic Engine",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra arrière",
+          "price": 199,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra TrueDepth",
+          "price": 299,
+          "acFee": 99
+        }
+      ]
+    },
+    {
+      "name": "iPhone 14 Plus",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 729,
+          "acFee": 99
+        },
+        {
+          "label": "Système central",
+          "price": 529,
+          "acFee": 99
+        },
+        {
+          "label": "Écran",
+          "price": 405,
+          "acFee": 29
+        },
+        {
+          "label": "Verre arrière",
+          "price": 169,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        },
+        {
+          "label": "Haut-parleur supérieur",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Haut-parleur inférieur",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Taptic Engine",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra arrière",
+          "price": 199,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra TrueDepth",
+          "price": 299,
+          "acFee": 99
+        }
+      ]
+    },
+    {
+      "name": "iPhone 14 Pro",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 799,
+          "acFee": 99
+        },
+        {
+          "label": "Système arrière",
+          "price": 599,
+          "acFee": 99
+        },
+        {
+          "label": "Écran",
+          "price": 405,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        },
+        {
+          "label": "Haut-parleur supérieur",
+          "price": 165,
+          "acFee": 99
+        },
+        {
+          "label": "Haut-parleur inférieur",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Taptic Engine",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra arrière",
+          "price": 259,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra TrueDepth",
+          "price": 299,
+          "acFee": 99
+        }
+      ]
+    },
+    {
+      "name": "iPhone 14 Pro Max",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 859,
+          "acFee": 99
+        },
+        {
+          "label": "Système arrière",
+          "price": 669,
+          "acFee": 99
+        },
+        {
+          "label": "Écran",
+          "price": 489,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        },
+        {
+          "label": "Haut-parleur supérieur",
+          "price": 165,
+          "acFee": 99
+        },
+        {
+          "label": "Haut-parleur inférieur",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Taptic Engine",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra arrière",
+          "price": 259,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra TrueDepth",
+          "price": 299,
+          "acFee": 99
+        }
+      ]
+    },
+    {
+      "name": "iPhone 15",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 659,
+          "acFee": 99
+        },
+        {
+          "label": "Système central",
+          "price": 459,
+          "acFee": 99
+        },
+        {
+          "label": "Écran",
+          "price": 339,
+          "acFee": 29
+        },
+        {
+          "label": "Verre arrière",
+          "price": 169,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        },
+        {
+          "label": "Micro principal",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Haut-parleur supérieur",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Haut-parleur inférieur",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Taptic Engine",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra arrière",
+          "price": 199,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra TrueDepth",
+          "price": 299,
+          "acFee": 99
+        }
+      ]
+    },
+    {
+      "name": "iPhone 15 Plus",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 729,
+          "acFee": 99
+        },
+        {
+          "label": "Système central",
+          "price": 529,
+          "acFee": 99
+        },
+        {
+          "label": "Écran",
+          "price": 405,
+          "acFee": 29
+        },
+        {
+          "label": "Verre arrière",
+          "price": 169,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        },
+        {
+          "label": "Micro principal",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Haut-parleur supérieur",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Haut-parleur inférieur",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Taptic Engine",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra arrière",
+          "price": 199,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra TrueDepth",
+          "price": 299,
+          "acFee": 99
+        }
+      ]
+    },
+    {
+      "name": "iPhone 15 Pro",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 799,
+          "acFee": 99
+        },
+        {
+          "label": "Système central",
+          "price": 599,
+          "acFee": 99
+        },
+        {
+          "label": "Écran",
+          "price": 405,
+          "acFee": 29
+        },
+        {
+          "label": "Verre arrière",
+          "price": 169,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        },
+        {
+          "label": "Haut-parleur supérieur",
+          "price": 165,
+          "acFee": 99
+        },
+        {
+          "label": "Haut-parleur inférieur",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Taptic Engine",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra arrière",
+          "price": 259,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra TrueDepth",
+          "price": 299,
+          "acFee": 99
+        }
+      ]
+    },
+    {
+      "name": "iPhone 15 Pro Max",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 859,
+          "acFee": 99
+        },
+        {
+          "label": "Système central",
+          "price": 669,
+          "acFee": 99
+        },
+        {
+          "label": "Écran",
+          "price": 489,
+          "acFee": 29
+        },
+        {
+          "label": "Verre arrière",
+          "price": 169,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        },
+        {
+          "label": "Haut-parleur supérieur",
+          "price": 165,
+          "acFee": 99
+        },
+        {
+          "label": "Haut-parleur inférieur",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Taptic Engine",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra arrière",
+          "price": 299,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra TrueDepth",
+          "price": 299,
+          "acFee": 99
+        }
+      ]
+    },
+    {
+      "name": "iPhone 16e",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 519,
+          "acFee": 99
+        },
+        {
+          "label": "Système central",
+          "price": 409,
+          "acFee": 99
+        },
+        {
+          "label": "Écran",
+          "price": 269,
+          "acFee": 29
+        },
+        {
+          "label": "Verre arrière",
+          "price": 169,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        },
+        {
+          "label": "Micro principal",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Haut-parleur supérieur",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Haut-parleur inférieur",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Taptic Engine",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra arrière",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra TrueDepth",
+          "price": 229,
+          "acFee": 99
+        }
+      ]
+    },
+    {
+      "name": "iPhone 16",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 659,
+          "acFee": 99
+        },
+        {
+          "label": "Système central",
+          "price": 459,
+          "acFee": 99
+        },
+        {
+          "label": "Écran",
+          "price": 339,
+          "acFee": 29
+        },
+        {
+          "label": "Verre arrière",
+          "price": 169,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        },
+        {
+          "label": "Micro principal",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Haut-parleur supérieur",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Haut-parleur inférieur",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Taptic Engine",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra arrière",
+          "price": 199,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra TrueDepth",
+          "price": 299,
+          "acFee": 99
+        }
+      ]
+    },
+    {
+      "name": "iPhone 16 Plus",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 729,
+          "acFee": 99
+        },
+        {
+          "label": "Système central",
+          "price": 529,
+          "acFee": 99
+        },
+        {
+          "label": "Écran",
+          "price": 405,
+          "acFee": 29
+        },
+        {
+          "label": "Verre arrière",
+          "price": 169,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        },
+        {
+          "label": "Micro principal",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Haut-parleur supérieur",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Haut-parleur inférieur",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Taptic Engine",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra arrière",
+          "price": 199,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra TrueDepth",
+          "price": 299,
+          "acFee": 99
+        }
+      ]
+    },
+    {
+      "name": "iPhone 16 Pro",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 799,
+          "acFee": 99
+        },
+        {
+          "label": "Système central",
+          "price": 599,
+          "acFee": 99
+        },
+        {
+          "label": "Écran",
+          "price": 405,
+          "acFee": 29
+        },
+        {
+          "label": "Verre arrière",
+          "price": 169,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 135,
+          "acFee": 0
+        },
+        {
+          "label": "Micro principal",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Haut-parleur supérieur",
+          "price": 165,
+          "acFee": 99
+        },
+        {
+          "label": "Haut-parleur inférieur",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Taptic Engine",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra arrière",
+          "price": 299,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra TrueDepth",
+          "price": 299,
+          "acFee": 99
+        }
+      ]
+    },
+    {
+      "name": "iPhone 16 Pro Max",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 899,
+          "acFee": 99
+        },
+        {
+          "label": "Système central",
+          "price": 669,
+          "acFee": 99
+        },
+        {
+          "label": "Écran",
+          "price": 489,
+          "acFee": 29
+        },
+        {
+          "label": "Verre arrière",
+          "price": 169,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 135,
+          "acFee": 0
+        },
+        {
+          "label": "Micro principal",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Haut-parleur supérieur",
+          "price": 165,
+          "acFee": 99
+        },
+        {
+          "label": "Haut-parleur inférieur",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Taptic Engine",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra arrière",
+          "price": 299,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra TrueDepth",
+          "price": 299,
+          "acFee": 99
+        }
+      ]
+    },
+    {
+      "name": "iPhone 17e",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 519,
+          "acFee": 99
+        },
+        {
+          "label": "Système central",
+          "price": 409,
+          "acFee": 99
+        },
+        {
+          "label": "Écran",
+          "price": 269,
+          "acFee": 29
+        },
+        {
+          "label": "Verre arrière",
+          "price": 169,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        },
+        {
+          "label": "Micro principal",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Haut-parleur supérieur",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Haut-parleur inférieur",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Taptic Engine",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra arrière",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra TrueDepth",
+          "price": 229,
+          "acFee": 99
+        }
+      ]
+    },
+    {
+      "name": "iPhone 17",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 729,
+          "acFee": 99
+        },
+        {
+          "label": "Carte logique",
+          "price": 399,
+          "acFee": 99
+        },
+        {
+          "label": "Boîtier",
+          "price": 319,
+          "acFee": 99
+        },
+        {
+          "label": "Écran",
+          "price": 405,
+          "acFee": 29
+        },
+        {
+          "label": "Verre arrière",
+          "price": 169,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        },
+        {
+          "label": "Micro principal",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Haut-parleur supérieur",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Haut-parleur inférieur",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Taptic Engine",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra arrière",
+          "price": 199,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra avant",
+          "price": 229,
+          "acFee": 99
+        }
+      ]
+    },
+    {
+      "name": "iPhone 17 Pro",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 899,
+          "acFee": 99
+        },
+        {
+          "label": "Carte logique",
+          "price": 449,
+          "acFee": 99
+        },
+        {
+          "label": "Boîtier",
+          "price": 399,
+          "acFee": 99
+        },
+        {
+          "label": "Écran",
+          "price": 405,
+          "acFee": 29
+        },
+        {
+          "label": "Verre arrière",
+          "price": 169,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 135,
+          "acFee": 0
+        },
+        {
+          "label": "Micro principal",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Haut-parleur supérieur",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Haut-parleur inférieur",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Taptic Engine",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra arrière",
+          "price": 299,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra avant",
+          "price": 229,
+          "acFee": 99
+        }
+      ]
+    },
+    {
+      "name": "iPhone 17 Pro Max",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 955,
+          "acFee": 99
+        },
+        {
+          "label": "Carte logique",
+          "price": 449,
+          "acFee": 99
+        },
+        {
+          "label": "Boîtier",
+          "price": 399,
+          "acFee": 99
+        },
+        {
+          "label": "Écran",
+          "price": 489,
+          "acFee": 29
+        },
+        {
+          "label": "Verre arrière",
+          "price": 169,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 135,
+          "acFee": 0
+        },
+        {
+          "label": "Micro principal",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Haut-parleur supérieur",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Haut-parleur inférieur",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Taptic Engine",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra arrière",
+          "price": 299,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra avant",
+          "price": 229,
+          "acFee": 99
+        }
+      ]
+    },
+    {
+      "name": "iPhone Air",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 859,
+          "acFee": 99
+        },
+        {
+          "label": "Carte logique",
+          "price": 449,
+          "acFee": 99
+        },
+        {
+          "label": "Boîtier",
+          "price": 399,
+          "acFee": 99
+        },
+        {
+          "label": "Écran",
+          "price": 405,
+          "acFee": 29
+        },
+        {
+          "label": "Verre arrière",
+          "price": 169,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 135,
+          "acFee": 0
+        },
+        {
+          "label": "Micro principal",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Micro auxiliaire",
+          "price": 189,
+          "acFee": 99
+        },
+        {
+          "label": "Haut-parleur supérieur",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Taptic Engine",
+          "price": 149,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra arrière",
+          "price": 199,
+          "acFee": 99
+        },
+        {
+          "label": "Caméra avant",
+          "price": 229,
+          "acFee": 99
+        }
+      ]
+    },
+    {
+      "name": "Accessoires iPhone",
+      "components": [
+        {
+          "label": "Tiroir SIM",
+          "price": 10,
+          "acFee": 99
+        }
+      ]
+    }
+  ],
+  "iPad": [
+    {
+      "name": "iPad A16 WiFi",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 429,
+          "acFee": 49
+        },
+        {
+          "label": "Écran",
+          "price": 279,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 135,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "iPad A16 WiFi+Cell",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 489,
+          "acFee": 49
+        },
+        {
+          "label": "Écran",
+          "price": 279,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 135,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "iPad Air 11 M2 WiFi",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 585,
+          "acFee": 49
+        },
+        {
+          "label": "Écran",
+          "price": 389,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 135,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "iPad Air 11 M2 Cell",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 639,
+          "acFee": 49
+        },
+        {
+          "label": "Écran",
+          "price": 389,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 135,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "iPad Air 13 M2 WiFi",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 749,
+          "acFee": 49
+        },
+        {
+          "label": "Écran",
+          "price": 559,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 169,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "iPad Air 13 M2 Cell",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 809,
+          "acFee": 49
+        },
+        {
+          "label": "Écran",
+          "price": 559,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 169,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "iPad Air 11 M3 WiFi",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 585,
+          "acFee": 49
+        },
+        {
+          "label": "Écran",
+          "price": 389,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 135,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "iPad Air 11 M3 Cell",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 639,
+          "acFee": 49
+        },
+        {
+          "label": "Écran",
+          "price": 389,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 135,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "iPad Air 13 M3 WiFi",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 749,
+          "acFee": 49
+        },
+        {
+          "label": "Écran",
+          "price": 559,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 169,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "iPad Air 13 M3 Cell",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 809,
+          "acFee": 49
+        },
+        {
+          "label": "Écran",
+          "price": 559,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 169,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "iPad Air 11 M4 WiFi",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 605,
+          "acFee": 49
+        },
+        {
+          "label": "Écran",
+          "price": 389,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 149,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "iPad Air 11 M4 Cell",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 659,
+          "acFee": 49
+        },
+        {
+          "label": "Écran",
+          "price": 389,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 149,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "iPad Air 13 M4 WiFi",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 769,
+          "acFee": 49
+        },
+        {
+          "label": "Écran",
+          "price": 559,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 169,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "iPad Air 13 M4 Cell",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 829,
+          "acFee": 49
+        },
+        {
+          "label": "Écran",
+          "price": 559,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 169,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "iPad mini A17 Pro WiFi",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 489,
+          "acFee": 49
+        },
+        {
+          "label": "Écran",
+          "price": 299,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 135,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "iPad mini A17 Pro Cell",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 535,
+          "acFee": 49
+        },
+        {
+          "label": "Écran",
+          "price": 299,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 135,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "iPad Pro 11 M4 WiFi",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 1049,
+          "acFee": 99
+        },
+        {
+          "label": "Écran",
+          "price": 669,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 205,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "iPad Pro 11 M4 Cell",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 1109,
+          "acFee": 99
+        },
+        {
+          "label": "Écran",
+          "price": 669,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 205,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "iPad Pro 11 M5 WiFi",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 1099,
+          "acFee": 99
+        },
+        {
+          "label": "Écran",
+          "price": 669,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 205,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "iPad Pro 11 M5 Cell",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 1159,
+          "acFee": 99
+        },
+        {
+          "label": "Écran",
+          "price": 669,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 205,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "iPad Pro 13 M4 WiFi",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 1219,
+          "acFee": 99
+        },
+        {
+          "label": "Écran",
+          "price": 829,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 225,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "iPad Pro 13 M4 Cell",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 1279,
+          "acFee": 99
+        },
+        {
+          "label": "Écran",
+          "price": 829,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 225,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "iPad Pro 13 M5 WiFi",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 1269,
+          "acFee": 99
+        },
+        {
+          "label": "Écran",
+          "price": 839,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 225,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "iPad Pro 13 M5 Cell",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 1329,
+          "acFee": 99
+        },
+        {
+          "label": "Écran",
+          "price": 829,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 225,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "iPad 6e",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 285,
+          "acFee": 49
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "iPad 7e",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 285,
+          "acFee": 49
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "iPad 8e",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 285,
+          "acFee": 49
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "iPad 9e",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 335,
+          "acFee": 49
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "iPad 10e WiFi",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 388,
+          "acFee": 49
+        },
+        {
+          "label": "Batterie",
+          "price": 135,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "iPad 10e WiFi+Cell",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 459,
+          "acFee": 49
+        },
+        {
+          "label": "Batterie",
+          "price": 135,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "iPad Air 3e",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 425,
+          "acFee": 49
+        },
+        {
+          "label": "Batterie",
+          "price": 135,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "iPad Air 4e",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 475,
+          "acFee": 49
+        },
+        {
+          "label": "Batterie",
+          "price": 135,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "iPad Air 5e WiFi",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 555,
+          "acFee": 49
+        },
+        {
+          "label": "Batterie",
+          "price": 135,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "iPad Air 5e WiFi+Cell",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 609,
+          "acFee": 49
+        },
+        {
+          "label": "Batterie",
+          "price": 135,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "iPad mini 5e",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 339,
+          "acFee": 49
+        },
+        {
+          "label": "Batterie",
+          "price": 135,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "iPad mini 6e WiFi",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 459,
+          "acFee": 49
+        },
+        {
+          "label": "Batterie",
+          "price": 135,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "iPad mini 6e WiFi+Cell",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 505,
+          "acFee": 49
+        },
+        {
+          "label": "Batterie",
+          "price": 135,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "iPad Pro 10.5",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 505,
+          "acFee": 49
+        },
+        {
+          "label": "Batterie",
+          "price": 135,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "iPad Pro 11 1re",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 559,
+          "acFee": 99
+        },
+        {
+          "label": "Batterie",
+          "price": 135,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "iPad Pro 11 2e",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 559,
+          "acFee": 99
+        },
+        {
+          "label": "Batterie",
+          "price": 135,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "iPad Pro 11 3e WiFi",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 699,
+          "acFee": 99
+        },
+        {
+          "label": "Batterie",
+          "price": 135,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "iPad Pro 11 3e Cell",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 749,
+          "acFee": 99
+        },
+        {
+          "label": "Batterie",
+          "price": 135,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "iPad Pro 11 4e WiFi",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 699,
+          "acFee": 99
+        },
+        {
+          "label": "Batterie",
+          "price": 169,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "iPad Pro 11 4e Cell",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 749,
+          "acFee": 99
+        },
+        {
+          "label": "Batterie",
+          "price": 169,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "iPad Pro 12.9 3e",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 729,
+          "acFee": 99
+        },
+        {
+          "label": "Batterie",
+          "price": 135,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "iPad Pro 12.9 4e",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 729,
+          "acFee": 99
+        },
+        {
+          "label": "Batterie",
+          "price": 135,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "iPad Pro 12.9 5e WiFi",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 925,
+          "acFee": 99
+        },
+        {
+          "label": "Batterie",
+          "price": 135,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "iPad Pro 12.9 5e Cell",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 979,
+          "acFee": 99
+        },
+        {
+          "label": "Batterie",
+          "price": 205,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "iPad Pro 12.9 6e WiFi",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 925,
+          "acFee": 99
+        },
+        {
+          "label": "Batterie",
+          "price": 205,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "iPad Pro 12.9 6e Cell",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 979,
+          "acFee": 99
+        },
+        {
+          "label": "Batterie",
+          "price": 205,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Accessoires iPad",
+      "components": [
+        {
+          "label": "Tiroir SIM",
+          "price": 10,
+          "acFee": 29
+        },
+        {
+          "label": "Smart Keyboard",
+          "price": "Prix neuf"
+        },
+        {
+          "label": "Apple Pencil",
+          "price": 89,
+          "acFee": 29
+        },
+        {
+          "label": "Apple Pencil 2e",
+          "price": 125,
+          "acFee": 29
+        },
+        {
+          "label": "Apple Pencil USB-C",
+          "price": 79,
+          "acFee": 29
+        },
+        {
+          "label": "Apple Pencil Pro",
+          "price": 125,
+          "acFee": 29
+        },
+        {
+          "label": "Bouchon",
+          "price": 11,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie Pencil",
+          "price": 29,
+          "acFee": 0
+        }
+      ]
+    }
+  ],
+  "AppleWatch": [
+    {
+      "name": "Apple Watch SE GPS",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 265,
+          "acFee": 65
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch SE Nike GPS",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 265,
+          "acFee": 65
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch SE Cellular",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 309,
+          "acFee": 65
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch SE Nike Cellular",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 309,
+          "acFee": 65
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch SE 2e GPS",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 229,
+          "acFee": 65
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch SE 2e Cellular",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 269,
+          "acFee": 65
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch SE 3 GPS",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 229,
+          "acFee": 65
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch SE 3 Cellular",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 269,
+          "acFee": 65
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Series 3 GPS",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 195,
+          "acFee": 65
+        },
+        {
+          "label": "Batterie",
+          "price": 89,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Series 3 Nike GPS",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 195,
+          "acFee": 65
+        },
+        {
+          "label": "Batterie",
+          "price": 89,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Series 3 Cellular",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 279,
+          "acFee": 65
+        },
+        {
+          "label": "Batterie",
+          "price": 89,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Series 3 Nike Cellular",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 279,
+          "acFee": 65
+        },
+        {
+          "label": "Batterie",
+          "price": 89,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Series 3 Acier",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 405,
+          "acFee": 75
+        },
+        {
+          "label": "Batterie",
+          "price": 89,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Series 3 Hermès",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 405,
+          "acFee": 75
+        },
+        {
+          "label": "Batterie",
+          "price": 89,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Series 3 Edition",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 999,
+          "acFee": 75
+        },
+        {
+          "label": "Batterie",
+          "price": 89,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Series 4 GPS",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 359,
+          "acFee": 65
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Series 4 Cellular",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 429,
+          "acFee": 65
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Series 4 Acier",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 479,
+          "acFee": 75
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Series 5 GPS",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 359,
+          "acFee": 65
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Series 5 Nike GPS",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 359,
+          "acFee": 65
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Series 5 Cellular",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 429,
+          "acFee": 65
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Series 5 Nike Cellular",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 429,
+          "acFee": 65
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Series 5 Acier",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 479,
+          "acFee": 75
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Series 5 Hermès",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 479,
+          "acFee": 75
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Series 5 Edition Titane",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 609,
+          "acFee": 75
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Series 5 Edition Céramique",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 999,
+          "acFee": 75
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Series 6 GPS",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 359,
+          "acFee": 65
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Series 6 Nike GPS",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 359,
+          "acFee": 65
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Series 6 Cellular",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 429,
+          "acFee": 65
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Series 6 Nike Cellular",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 429,
+          "acFee": 65
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Series 6 Acier",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 479,
+          "acFee": 75
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Series 6 Hermès",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 479,
+          "acFee": 75
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Series 6 Edition Titane",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 609,
+          "acFee": 75
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Series 7 GPS",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 359,
+          "acFee": 65
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Series 7 Nike GPS",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 359,
+          "acFee": 65
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Series 7 Cellular",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 429,
+          "acFee": 65
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Series 7 Nike Cellular",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 429,
+          "acFee": 65
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Series 7 Cellular Acier",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 479,
+          "acFee": 75
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Series 7 Hermès",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 479,
+          "acFee": 75
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Series 7 Edition Titane",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 609,
+          "acFee": 75
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Series 8 GPS",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 359,
+          "acFee": 65
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Series 8 Cellular",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 429,
+          "acFee": 65
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Series 8 Acier",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 479,
+          "acFee": 75
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Series 8 Hermès",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 479,
+          "acFee": 75
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Series 9 GPS",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 359,
+          "acFee": 65
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Series 9 Cellular",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 429,
+          "acFee": 65
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Series 9 Acier",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 479,
+          "acFee": 75
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Series 9 Hermès",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 479,
+          "acFee": 75
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Series 10 GPS",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 359,
+          "acFee": 65
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Series 10 Cellular",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 429,
+          "acFee": 65
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Series 10 Titane",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 479,
+          "acFee": 75
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Series 10 Hermès",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 479,
+          "acFee": 75
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Series 11 GPS",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 359,
+          "acFee": 65
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Series 11 Cellular",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 429,
+          "acFee": 65
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Series 11 Titane",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 479,
+          "acFee": 75
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Series 11 Hermès",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 479,
+          "acFee": 75
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Ultra",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 619,
+          "acFee": 75
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Ultra 2",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 619,
+          "acFee": 75
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Ultra 2 Hermès",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 619,
+          "acFee": 75
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Ultra 3",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 619,
+          "acFee": 75
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Apple Watch Ultra 3 Hermès",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 619,
+          "acFee": 75
+        },
+        {
+          "label": "Batterie",
+          "price": 109,
+          "acFee": 0
+        }
+      ]
+    }
+  ],
+  "iPod": [
+    {
+      "name": "iPod Touch 6e",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 149,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 89,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "iPod Touch 7e",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 149,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 89,
+          "acFee": 0
+        }
+      ]
+    }
+  ],
+  "HomePod": [
+    {
+      "name": "HomePod",
+      "components": [
+        {
+          "label": "Complet",
+          "price": 279,
+          "acFee": 29
+        },
+        {
+          "label": "Câble",
+          "price": 29,
+          "acFee": 29
+        }
+      ]
+    },
+    {
+      "name": "HomePod 2e",
+      "components": [
+        {
+          "label": "Complet",
+          "price": 319,
+          "acFee": 29
+        },
+        {
+          "label": "Câble",
+          "price": 29,
+          "acFee": 29
+        }
+      ]
+    },
+    {
+      "name": "HomePod mini",
+      "components": [
+        {
+          "label": "Complet",
+          "price": 109,
+          "acFee": 15
+        },
+        {
+          "label": "Câble",
+          "price": 29,
+          "acFee": 15
+        }
+      ]
+    }
+  ],
+  "AirPods": [
+    {
+      "name": "AirPods 1 & 2",
+      "components": [
+        {
+          "label": "AirPods",
+          "price": 79,
+          "acFee": 29
+        },
+        {
+          "label": "Boîtier Lightning",
+          "price": 69,
+          "acFee": 29
+        },
+        {
+          "label": "Perdu AirPods",
+          "price": 69,
+          "acFee": 29
+        },
+        {
+          "label": "Boîtier sans fil",
+          "price": 79,
+          "acFee": 29
+        },
+        {
+          "label": "Perdu Boîtier sans fil",
+          "price": 89,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie AirPods",
+          "price": 59,
+          "acFee": 0
+        },
+        {
+          "label": "Batterie Boîtier",
+          "price": 59,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "AirPods 3",
+      "components": [
+        {
+          "label": "AirPods",
+          "price": 79,
+          "acFee": 29
+        },
+        {
+          "label": "Boîtier Lightning",
+          "price": 69,
+          "acFee": 29
+        },
+        {
+          "label": "Perdu AirPods",
+          "price": 79,
+          "acFee": 29
+        },
+        {
+          "label": "Boîtier MagSafe",
+          "price": 79,
+          "acFee": 29
+        },
+        {
+          "label": "Perdu Boîtier MagSafe",
+          "price": 89,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie AirPods",
+          "price": 59,
+          "acFee": 0
+        },
+        {
+          "label": "Batterie Boîtier",
+          "price": 59,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "AirPods 4",
+      "components": [
+        {
+          "label": "AirPods",
+          "price": 79,
+          "acFee": 29
+        },
+        {
+          "label": "Boîtier charge",
+          "price": 69,
+          "acFee": 29
+        },
+        {
+          "label": "Perdu AirPods",
+          "price": 79,
+          "acFee": 29
+        },
+        {
+          "label": "Boîtier ANC",
+          "price": 79,
+          "acFee": 29
+        },
+        {
+          "label": "Perdu Boîtier ANC",
+          "price": 89,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie AirPods",
+          "price": 59,
+          "acFee": 0
+        },
+        {
+          "label": "Batterie Boîtier",
+          "price": 59,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "AirPods Pro 1",
+      "components": [
+        {
+          "label": "AirPods Pro",
+          "price": 99,
+          "acFee": 29
+        },
+        {
+          "label": "Boîtier sans fil",
+          "price": 99,
+          "acFee": 29
+        },
+        {
+          "label": "Perdu",
+          "price": 109,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie AirPods",
+          "price": 59,
+          "acFee": 0
+        },
+        {
+          "label": "Batterie Boîtier",
+          "price": 59,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "AirPods Pro 2 (Lightning & USB-C)",
+      "components": [
+        {
+          "label": "AirPods Pro",
+          "price": 99,
+          "acFee": 29
+        },
+        {
+          "label": "Boîtier",
+          "price": 99,
+          "acFee": 29
+        },
+        {
+          "label": "Perdu",
+          "price": 109,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie AirPods",
+          "price": 59,
+          "acFee": 0
+        },
+        {
+          "label": "Batterie Boîtier",
+          "price": 59,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "AirPods Pro 3",
+      "components": [
+        {
+          "label": "AirPods Pro",
+          "price": 99,
+          "acFee": 29
+        },
+        {
+          "label": "Boîtier",
+          "price": 99,
+          "acFee": 29
+        },
+        {
+          "label": "Perdu",
+          "price": 109,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie AirPods",
+          "price": 59,
+          "acFee": 0
+        },
+        {
+          "label": "Batterie Boîtier",
+          "price": 59,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "AirPods Max 1, USB-C & 2",
+      "components": [
+        {
+          "label": "AirPods",
+          "price": 315,
+          "acFee": 29
+        },
+        {
+          "label": "Coussinets",
+          "price": 39,
+          "acFee": 29
+        },
+        {
+          "label": "Case",
+          "price": 69,
+          "acFee": 29
+        },
+        {
+          "label": "Batterie",
+          "price": 85,
+          "acFee": 0
+        }
+      ]
+    }
+  ],
+  "AppleTV": [
+    {
+      "name": "Apple TV 4K 1re",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 129,
+          "acFee": 15
+        }
+      ]
+    },
+    {
+      "name": "Apple TV 4K 2e",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 129,
+          "acFee": 15
+        }
+      ]
+    },
+    {
+      "name": "Apple TV 4K 3e WiFi",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 145,
+          "acFee": 15
+        }
+      ]
+    },
+    {
+      "name": "Apple TV 4K 3e WiFi+Ethernet",
+      "components": [
+        {
+          "label": "Swap",
+          "price": 155,
+          "acFee": 15
+        }
+      ]
+    },
+    {
+      "name": "Siri Remote 1e",
+      "components": [
+        {
+          "label": "Batterie",
+          "price": 35,
+          "acFee": 0
+        }
+      ]
+    },
+    {
+      "name": "Siri Remote 3e",
+      "components": [
+        {
+          "label": "Batterie",
+          "price": 35,
+          "acFee": 0
+        }
+      ]
+    }
+  ],
+  "Mac": [
+    {
+      "name": "MacBook PRO 16\"",
+      "components": [
+        {
+          "label": "Écran",
+          "price": 958.25,
+          "acFee": 99
+        },
+        {
+          "label": "Carte logique",
+          "price": 1130.33,
+          "acFee": 259
+        },
+        {
+          "label": "Top Case",
+          "price": 786.17,
+          "acFee": 259
+        },
+        {
+          "label": "Trackpad",
+          "price": 201.14,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 289,
+          "acFee": 0
+        },
+        {
+          "label": "Dégât liquide",
+          "price": 2059,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook PRO 14\"",
+      "components": [
+        {
+          "label": "Écran",
+          "price": 843.53,
+          "acFee": 99
+        },
+        {
+          "label": "Carte logique",
+          "price": 958.25,
+          "acFee": 259
+        },
+        {
+          "label": "Top Case",
+          "price": 671.45,
+          "acFee": 259
+        },
+        {
+          "label": "Trackpad",
+          "price": 201.14,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 289,
+          "acFee": 0
+        },
+        {
+          "label": "Dégât liquide",
+          "price": 1799,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook Air 15\"",
+      "components": [
+        {
+          "label": "Écran",
+          "price": 671.45,
+          "acFee": 99
+        },
+        {
+          "label": "Carte logique",
+          "price": 763.22,
+          "acFee": 259
+        },
+        {
+          "label": "Top Case",
+          "price": 556.73,
+          "acFee": 259
+        },
+        {
+          "label": "Trackpad",
+          "price": 201.14,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 225,
+          "acFee": 0
+        },
+        {
+          "label": "Dégât liquide",
+          "price": 1409,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook Air 13\"",
+      "components": [
+        {
+          "label": "Écran",
+          "price": 614.09,
+          "acFee": 99
+        },
+        {
+          "label": "Carte logique",
+          "price": 728.81,
+          "acFee": 259
+        },
+        {
+          "label": "Top Case",
+          "price": 522.31,
+          "acFee": 259
+        },
+        {
+          "label": "Trackpad",
+          "price": 201.14,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 185,
+          "acFee": 0
+        },
+        {
+          "label": "Dégât liquide",
+          "price": 1209,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook Neo",
+      "components": [
+        {
+          "label": "Écran",
+          "price": 384.65,
+          "acFee": 99
+        },
+        {
+          "label": "Carte logique",
+          "price": 442.01,
+          "acFee": 259
+        },
+        {
+          "label": "Top Case",
+          "price": 327.29,
+          "acFee": 259
+        },
+        {
+          "label": "Trackpad",
+          "price": 178.19,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 169,
+          "acFee": 0
+        },
+        {
+          "label": "Dégât liquide",
+          "price": 689,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "iMac",
+      "components": [
+        {
+          "label": "Écran",
+          "price": 728.81,
+          "acFee": 99
+        },
+        {
+          "label": "Carte logique",
+          "price": 786.17,
+          "acFee": 259
+        },
+        {
+          "label": "Boîtier arrière",
+          "price": 533.96,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "Mac mini",
+      "components": [
+        {
+          "label": "Carte logique",
+          "price": 614.09,
+          "acFee": 259
+        },
+        {
+          "label": "Boîtier arrière",
+          "price": 235.57,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "Mac Studio",
+      "components": [
+        {
+          "label": "Carte logique",
+          "price": 1130.33,
+          "acFee": 259
+        },
+        {
+          "label": "Boîtier arrière",
+          "price": 499.54,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook Pro (16-inch, 2019)",
+      "components": [
+        {
+          "label": "Forfait réparation",
+          "price": 809,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 289,
+          "acFee": 0
+        },
+        {
+          "label": "Dommage 1 pièce (ex. écran)",
+          "price": 809,
+          "acFee": 259
+        },
+        {
+          "label": "Dommage 2 pièces (ex. écran + Top Case)",
+          "price": 1499,
+          "acFee": 259
+        },
+        {
+          "label": "Toutes pièces / dégât liquide",
+          "price": 1719,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook Pro (15-inch, 2019)",
+      "components": [
+        {
+          "label": "Forfait réparation",
+          "price": 809,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 289,
+          "acFee": 0
+        },
+        {
+          "label": "Dommage 1 pièce (ex. écran)",
+          "price": 809,
+          "acFee": 259
+        },
+        {
+          "label": "Dommage 2 pièces (ex. écran + Top Case)",
+          "price": 1499,
+          "acFee": 259
+        },
+        {
+          "label": "Toutes pièces / dégât liquide",
+          "price": 1719,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook Pro (15-inch, 2018)",
+      "components": [
+        {
+          "label": "Forfait réparation",
+          "price": 809,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 289,
+          "acFee": 0
+        },
+        {
+          "label": "Dommage 1 pièce (ex. écran)",
+          "price": 809,
+          "acFee": 259
+        },
+        {
+          "label": "Dommage 2 pièces (ex. écran + Top Case)",
+          "price": 1499,
+          "acFee": 259
+        },
+        {
+          "label": "Toutes pièces / dégât liquide",
+          "price": 1719,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook Pro (15-inch, 2017)",
+      "components": [
+        {
+          "label": "Forfait réparation",
+          "price": 809,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 289,
+          "acFee": 0
+        },
+        {
+          "label": "Dommage 1 pièce (ex. écran)",
+          "price": 809,
+          "acFee": 259
+        },
+        {
+          "label": "Dommage 2 pièces (ex. écran + Top Case)",
+          "price": 1499,
+          "acFee": 259
+        },
+        {
+          "label": "Toutes pièces / dégât liquide",
+          "price": 1719,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook Pro (15-inch, Late 2016)",
+      "components": [
+        {
+          "label": "Forfait réparation",
+          "price": 809,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 289,
+          "acFee": 0
+        },
+        {
+          "label": "Dommage 1 pièce (ex. écran)",
+          "price": 809,
+          "acFee": 259
+        },
+        {
+          "label": "Dommage 2 pièces (ex. écran + Top Case)",
+          "price": 1499,
+          "acFee": 259
+        },
+        {
+          "label": "Toutes pièces / dégât liquide",
+          "price": 1719,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook Pro (Retina, 15-inch, Mid 2015)",
+      "components": [
+        {
+          "label": "Forfait réparation",
+          "price": 699,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 289,
+          "acFee": 0
+        },
+        {
+          "label": "Dommage 1 pièce (ex. écran)",
+          "price": 699,
+          "acFee": 259
+        },
+        {
+          "label": "Dommage 2 pièces (ex. écran + Top Case)",
+          "price": 1149,
+          "acFee": 259
+        },
+        {
+          "label": "Toutes pièces / dégât liquide",
+          "price": 1519,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook Pro (14 inch, M3, Nov 2023)",
+      "components": [
+        {
+          "label": "Forfait réparation",
+          "price": 869,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 289,
+          "acFee": 0
+        },
+        {
+          "label": "Dommage 1 pièce (ex. écran)",
+          "price": 869,
+          "acFee": 259
+        },
+        {
+          "label": "Dommage 2 pièces (ex. écran + Top Case)",
+          "price": 1439,
+          "acFee": 259
+        },
+        {
+          "label": "Toutes pièces / dégât liquide",
+          "price": 1669,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook Pro (14-inch, M4, 2024)",
+      "components": [
+        {
+          "label": "Forfait réparation",
+          "price": 869,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 289,
+          "acFee": 0
+        },
+        {
+          "label": "Dommage 1 pièce (ex. écran)",
+          "price": 869,
+          "acFee": 259
+        },
+        {
+          "label": "Dommage 2 pièces (ex. écran + Top Case)",
+          "price": 1439,
+          "acFee": 259
+        },
+        {
+          "label": "Toutes pièces / dégât liquide",
+          "price": 1669,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook Pro (14-inch, M5, 2025)",
+      "components": [
+        {
+          "label": "Forfait réparation",
+          "price": 869,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 289,
+          "acFee": 0
+        },
+        {
+          "label": "Dommage 1 pièce (ex. écran)",
+          "price": 869,
+          "acFee": 259
+        },
+        {
+          "label": "Dommage 2 pièces (ex. écran + Top Case)",
+          "price": 1439,
+          "acFee": 259
+        },
+        {
+          "label": "Toutes pièces / dégât liquide",
+          "price": 1669,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook Pro (13-inch, 2020, Four Thunderbolt 3 ports)",
+      "components": [
+        {
+          "label": "Forfait réparation",
+          "price": 699,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 289,
+          "acFee": 0
+        },
+        {
+          "label": "Dommage 1 pièce (ex. écran)",
+          "price": 699,
+          "acFee": 259
+        },
+        {
+          "label": "Dommage 2 pièces (ex. écran + Top Case)",
+          "price": 1269,
+          "acFee": 259
+        },
+        {
+          "label": "Toutes pièces / dégât liquide",
+          "price": 1519,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook Pro (13-inch, 2019, Four Thunderbolt 3 ports)",
+      "components": [
+        {
+          "label": "Forfait réparation",
+          "price": 699,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 289,
+          "acFee": 0
+        },
+        {
+          "label": "Dommage 1 pièce (ex. écran)",
+          "price": 699,
+          "acFee": 259
+        },
+        {
+          "label": "Dommage 2 pièces (ex. écran + Top Case)",
+          "price": 1269,
+          "acFee": 259
+        },
+        {
+          "label": "Toutes pièces / dégât liquide",
+          "price": 1519,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook Pro (13-inch, 2018, Four Thunderbolt 3 ports)",
+      "components": [
+        {
+          "label": "Forfait réparation",
+          "price": 699,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 289,
+          "acFee": 0
+        },
+        {
+          "label": "Dommage 1 pièce (ex. écran)",
+          "price": 699,
+          "acFee": 259
+        },
+        {
+          "label": "Dommage 2 pièces (ex. écran + Top Case)",
+          "price": 1269,
+          "acFee": 259
+        },
+        {
+          "label": "Toutes pièces / dégât liquide",
+          "price": 1519,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook Pro (13-inch, 2017, Four Thunderbolt 3 ports)",
+      "components": [
+        {
+          "label": "Forfait réparation",
+          "price": 699,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 289,
+          "acFee": 0
+        },
+        {
+          "label": "Dommage 1 pièce (ex. écran)",
+          "price": 699,
+          "acFee": 259
+        },
+        {
+          "label": "Dommage 2 pièces (ex. écran + Top Case)",
+          "price": 1269,
+          "acFee": 259
+        },
+        {
+          "label": "Toutes pièces / dégât liquide",
+          "price": 1519,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook Pro (13-inch, 2016, Four Thunderbolt 3 ports)",
+      "components": [
+        {
+          "label": "Forfait réparation",
+          "price": 699,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 289,
+          "acFee": 0
+        },
+        {
+          "label": "Dommage 1 pièce (ex. écran)",
+          "price": 699,
+          "acFee": 259
+        },
+        {
+          "label": "Dommage 2 pièces (ex. écran + Top Case)",
+          "price": 1269,
+          "acFee": 259
+        },
+        {
+          "label": "Toutes pièces / dégât liquide",
+          "price": 1519,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook Pro (13-inch, 2019, Two Thunderbolt 3 ports)",
+      "components": [
+        {
+          "label": "Forfait réparation",
+          "price": 699,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 289,
+          "acFee": 0
+        },
+        {
+          "label": "Dommage 1 pièce (ex. écran)",
+          "price": 699,
+          "acFee": 259
+        },
+        {
+          "label": "Dommage 2 pièces (ex. écran + Top Case)",
+          "price": 1269,
+          "acFee": 259
+        },
+        {
+          "label": "Toutes pièces / dégât liquide",
+          "price": 1279,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook Pro (13-inch, 2020, Two Thunderbolt 3 ports)",
+      "components": [
+        {
+          "label": "Forfait réparation",
+          "price": 699,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 289,
+          "acFee": 0
+        },
+        {
+          "label": "Dommage 1 pièce (ex. écran)",
+          "price": 699,
+          "acFee": 259
+        },
+        {
+          "label": "Dommage 2 pièces (ex. écran + Top Case)",
+          "price": 1269,
+          "acFee": 259
+        },
+        {
+          "label": "Toutes pièces / dégât liquide",
+          "price": 1279,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook Pro (13-inch, M1, 2020)",
+      "components": [
+        {
+          "label": "Forfait réparation",
+          "price": 809,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 289,
+          "acFee": 0
+        },
+        {
+          "label": "Dommage 1 pièce (ex. écran)",
+          "price": 699,
+          "acFee": 259
+        },
+        {
+          "label": "Dommage 2 pièces (ex. écran + Top Case)",
+          "price": 1269,
+          "acFee": 259
+        },
+        {
+          "label": "Toutes pièces / dégât liquide",
+          "price": 1279,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook Pro (13-inch, M2, 2022)",
+      "components": [
+        {
+          "label": "Forfait réparation",
+          "price": 809,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 289,
+          "acFee": 0
+        },
+        {
+          "label": "Dommage 1 pièce (ex. écran)",
+          "price": 699,
+          "acFee": 259
+        },
+        {
+          "label": "Dommage 2 pièces (ex. écran + Top Case)",
+          "price": 1269,
+          "acFee": 259
+        },
+        {
+          "label": "Toutes pièces / dégât liquide",
+          "price": 1279,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook Pro (13-inch, 2017, Two Thunderbolt 3 ports)",
+      "components": [
+        {
+          "label": "Forfait réparation",
+          "price": 579,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 289,
+          "acFee": 0
+        },
+        {
+          "label": "Dommage 1 pièce (ex. écran)",
+          "price": 579,
+          "acFee": 259
+        },
+        {
+          "label": "Dommage 2 pièces (ex. écran + Top Case)",
+          "price": 979,
+          "acFee": 259
+        },
+        {
+          "label": "Toutes pièces / dégât liquide",
+          "price": 1149,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook Pro (13-inch, 2016, Two Thunderbolt 3 ports)",
+      "components": [
+        {
+          "label": "Forfait réparation",
+          "price": 579,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 289,
+          "acFee": 0
+        },
+        {
+          "label": "Dommage 1 pièce (ex. écran)",
+          "price": 579,
+          "acFee": 259
+        },
+        {
+          "label": "Dommage 2 pièces (ex. écran + Top Case)",
+          "price": 979,
+          "acFee": 259
+        },
+        {
+          "label": "Toutes pièces / dégât liquide",
+          "price": 1149,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook Pro (Retina, 13-inch, Early 2015)",
+      "components": [
+        {
+          "label": "Forfait réparation",
+          "price": 579,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 289,
+          "acFee": 0
+        },
+        {
+          "label": "Dommage 1 pièce (ex. écran)",
+          "price": 579,
+          "acFee": 259
+        },
+        {
+          "label": "Dommage 2 pièces (ex. écran + Top Case)",
+          "price": 979,
+          "acFee": 259
+        },
+        {
+          "label": "Toutes pièces / dégât liquide",
+          "price": 1149,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook (Retina, 12-inch, 2017)",
+      "components": [
+        {
+          "label": "Forfait réparation",
+          "price": 579,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 289,
+          "acFee": 0
+        },
+        {
+          "label": "Dommage 1 pièce (ex. écran)",
+          "price": 579,
+          "acFee": 259
+        },
+        {
+          "label": "Dommage 2 pièces (ex. écran + Top Case)",
+          "price": 919,
+          "acFee": 259
+        },
+        {
+          "label": "Toutes pièces / dégât liquide",
+          "price": 1169,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook Air (15-inch, M2, 2023)",
+      "components": [
+        {
+          "label": "Forfait réparation",
+          "price": 749,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 225,
+          "acFee": 0
+        },
+        {
+          "label": "Dommage 1 pièce (ex. écran)",
+          "price": 699,
+          "acFee": 259
+        },
+        {
+          "label": "Dommage 2 pièces (ex. écran + Top Case)",
+          "price": 1149,
+          "acFee": 259
+        },
+        {
+          "label": "Toutes pièces / dégât liquide",
+          "price": 1379,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook Air (15-inch, M3, 2024)",
+      "components": [
+        {
+          "label": "Forfait réparation",
+          "price": 749,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 225,
+          "acFee": 0
+        },
+        {
+          "label": "Dommage 1 pièce (ex. écran)",
+          "price": 699,
+          "acFee": 259
+        },
+        {
+          "label": "Dommage 2 pièces (ex. écran + Top Case)",
+          "price": 1149,
+          "acFee": 259
+        },
+        {
+          "label": "Toutes pièces / dégât liquide",
+          "price": 1379,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook Air (15-inch, M4, 2025)",
+      "components": [
+        {
+          "label": "Forfait réparation",
+          "price": 749,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 225,
+          "acFee": 0
+        },
+        {
+          "label": "Dommage 1 pièce (ex. écran)",
+          "price": 699,
+          "acFee": 259
+        },
+        {
+          "label": "Dommage 2 pièces (ex. écran + Top Case)",
+          "price": 1149,
+          "acFee": 259
+        },
+        {
+          "label": "Toutes pièces / dégât liquide",
+          "price": 1379,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook Air (15-inch, M5, 2026)",
+      "components": [
+        {
+          "label": "Forfait réparation",
+          "price": 789,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 225,
+          "acFee": 0
+        },
+        {
+          "label": "Dommage 1 pièce (ex. écran)",
+          "price": 699,
+          "acFee": 259
+        },
+        {
+          "label": "Dommage 2 pièces (ex. écran + Top Case)",
+          "price": 1149,
+          "acFee": 259
+        },
+        {
+          "label": "Toutes pièces / dégât liquide",
+          "price": 1409,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook Air (Retina, 13-inch, 2019)",
+      "components": [
+        {
+          "label": "Forfait réparation",
+          "price": 519,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 185,
+          "acFee": 0
+        },
+        {
+          "label": "Dommage 1 pièce (ex. écran)",
+          "price": 519,
+          "acFee": 259
+        },
+        {
+          "label": "Dommage 2 pièces (ex. écran + Top Case)",
+          "price": 809,
+          "acFee": 259
+        },
+        {
+          "label": "Toutes pièces / dégât liquide",
+          "price": 919,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook Air (Retina, 13-inch, 2018)",
+      "components": [
+        {
+          "label": "Forfait réparation",
+          "price": 519,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 185,
+          "acFee": 0
+        },
+        {
+          "label": "Dommage 1 pièce (ex. écran)",
+          "price": 519,
+          "acFee": 259
+        },
+        {
+          "label": "Dommage 2 pièces (ex. écran + Top Case)",
+          "price": 809,
+          "acFee": 259
+        },
+        {
+          "label": "Toutes pièces / dégât liquide",
+          "price": 919,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook Air (Retina, 13-inch, 2020)",
+      "components": [
+        {
+          "label": "Forfait réparation",
+          "price": 579,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 185,
+          "acFee": 0
+        },
+        {
+          "label": "Dommage 1 pièce (ex. écran)",
+          "price": 519,
+          "acFee": 259
+        },
+        {
+          "label": "Dommage 2 pièces (ex. écran + Top Case)",
+          "price": 809,
+          "acFee": 259
+        },
+        {
+          "label": "Toutes pièces / dégât liquide",
+          "price": 919,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook Air (13-inch, 2017)",
+      "components": [
+        {
+          "label": "Forfait réparation",
+          "price": 519,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 185,
+          "acFee": 0
+        },
+        {
+          "label": "Dommage 1 pièce (ex. écran)",
+          "price": 519,
+          "acFee": 259
+        },
+        {
+          "label": "Dommage 2 pièces (ex. écran + Top Case)",
+          "price": 749,
+          "acFee": 259
+        },
+        {
+          "label": "Toutes pièces / dégât liquide",
+          "price": 919,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook Air (13-inch, Early 2015)",
+      "components": [
+        {
+          "label": "Forfait réparation",
+          "price": 519,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 185,
+          "acFee": 0
+        },
+        {
+          "label": "Dommage 1 pièce (ex. écran)",
+          "price": 519,
+          "acFee": 259
+        },
+        {
+          "label": "Dommage 2 pièces (ex. écran + Top Case)",
+          "price": 749,
+          "acFee": 259
+        },
+        {
+          "label": "Toutes pièces / dégât liquide",
+          "price": 919,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook Air (M2, 2022)",
+      "components": [
+        {
+          "label": "Forfait réparation",
+          "price": 719,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 185,
+          "acFee": 0
+        },
+        {
+          "label": "Dommage 1 pièce (ex. écran)",
+          "price": 639,
+          "acFee": 259
+        },
+        {
+          "label": "Dommage 2 pièces (ex. écran + Top Case)",
+          "price": 1059,
+          "acFee": 259
+        },
+        {
+          "label": "Toutes pièces / dégât liquide",
+          "price": 1169,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook Air (13-inch, M3, 2024)",
+      "components": [
+        {
+          "label": "Forfait réparation",
+          "price": 719,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 185,
+          "acFee": 0
+        },
+        {
+          "label": "Dommage 1 pièce (ex. écran)",
+          "price": 639,
+          "acFee": 259
+        },
+        {
+          "label": "Dommage 2 pièces (ex. écran + Top Case)",
+          "price": 1059,
+          "acFee": 259
+        },
+        {
+          "label": "Toutes pièces / dégât liquide",
+          "price": 1169,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook Air (13-inch, M4, 2025)",
+      "components": [
+        {
+          "label": "Forfait réparation",
+          "price": 719,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 185,
+          "acFee": 0
+        },
+        {
+          "label": "Dommage 1 pièce (ex. écran)",
+          "price": 639,
+          "acFee": 259
+        },
+        {
+          "label": "Dommage 2 pièces (ex. écran + Top Case)",
+          "price": 1059,
+          "acFee": 259
+        },
+        {
+          "label": "Toutes pièces / dégât liquide",
+          "price": 1169,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook Air (13-inch, M5, 2026)",
+      "components": [
+        {
+          "label": "Forfait réparation",
+          "price": 749,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 185,
+          "acFee": 0
+        },
+        {
+          "label": "Dommage 1 pièce (ex. écran)",
+          "price": 639,
+          "acFee": 259
+        },
+        {
+          "label": "Dommage 2 pièces (ex. écran + Top Case)",
+          "price": 1059,
+          "acFee": 259
+        },
+        {
+          "label": "Toutes pièces / dégât liquide",
+          "price": 1209,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook Pro (16 inch Liquid Retina, 2021)",
+      "components": [
+        {
+          "label": "Forfait réparation",
+          "price": 839,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 289,
+          "acFee": 0
+        },
+        {
+          "label": "Dommage 1 pièce (ex. écran)",
+          "price": 839,
+          "acFee": 259
+        },
+        {
+          "label": "Dommage 2 pièces (ex. écran + Top Case)",
+          "price": 1419,
+          "acFee": 259
+        },
+        {
+          "label": "Toutes pièces / dégât liquide",
+          "price": 1689,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook Pro (16 inch, 2023)",
+      "components": [
+        {
+          "label": "Forfait réparation",
+          "price": 839,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 289,
+          "acFee": 0
+        },
+        {
+          "label": "Dommage 1 pièce (ex. écran)",
+          "price": 839,
+          "acFee": 259
+        },
+        {
+          "label": "Dommage 2 pièces (ex. écran + Top Case)",
+          "price": 1419,
+          "acFee": 259
+        },
+        {
+          "label": "Toutes pièces / dégât liquide",
+          "price": 1689,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook Pro (16 inch, Nov 2023)",
+      "components": [
+        {
+          "label": "Forfait réparation",
+          "price": 839,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 289,
+          "acFee": 0
+        },
+        {
+          "label": "Dommage 1 pièce (ex. écran)",
+          "price": 839,
+          "acFee": 259
+        },
+        {
+          "label": "Dommage 2 pièces (ex. écran + Top Case)",
+          "price": 1419,
+          "acFee": 259
+        },
+        {
+          "label": "Toutes pièces / dégât liquide",
+          "price": 1689,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook Pro (14 inch, 2024)",
+      "components": [
+        {
+          "label": "Forfait réparation",
+          "price": 979,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 289,
+          "acFee": 0
+        },
+        {
+          "label": "Dommage 1 pièce (ex. écran)",
+          "price": 869,
+          "acFee": 259
+        },
+        {
+          "label": "Dommage 2 pièces (ex. écran + Top Case)",
+          "price": 1439,
+          "acFee": 259
+        },
+        {
+          "label": "Toutes pièces / dégât liquide",
+          "price": 1799,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook Pro (14-inch, M5 Pro or M5 Max)",
+      "components": [
+        {
+          "label": "Forfait réparation",
+          "price": 1039,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 289,
+          "acFee": 0
+        },
+        {
+          "label": "Dommage 1 pièce (ex. écran)",
+          "price": 869,
+          "acFee": 259
+        },
+        {
+          "label": "Dommage 2 pièces (ex. écran + Top Case)",
+          "price": 1439,
+          "acFee": 259
+        },
+        {
+          "label": "Toutes pièces / dégât liquide",
+          "price": 1859,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook Pro (14 inch Liquid Retina, 2021)",
+      "components": [
+        {
+          "label": "Forfait réparation",
+          "price": 869,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 289,
+          "acFee": 0
+        },
+        {
+          "label": "Dommage 1 pièce (ex. écran)",
+          "price": 869,
+          "acFee": 259
+        },
+        {
+          "label": "Dommage 2 pièces (ex. écran + Top Case)",
+          "price": 1439,
+          "acFee": 259
+        },
+        {
+          "label": "Toutes pièces / dégât liquide",
+          "price": 1799,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook Pro (14 inch, 2023)",
+      "components": [
+        {
+          "label": "Forfait réparation",
+          "price": 869,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 289,
+          "acFee": 0
+        },
+        {
+          "label": "Dommage 1 pièce (ex. écran)",
+          "price": 869,
+          "acFee": 259
+        },
+        {
+          "label": "Dommage 2 pièces (ex. écran + Top Case)",
+          "price": 1439,
+          "acFee": 259
+        },
+        {
+          "label": "Toutes pièces / dégât liquide",
+          "price": 1799,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook Pro (14 inch, M3 Pro or Max, Nov 2023)",
+      "components": [
+        {
+          "label": "Forfait réparation",
+          "price": 869,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 289,
+          "acFee": 0
+        },
+        {
+          "label": "Dommage 1 pièce (ex. écran)",
+          "price": 869,
+          "acFee": 259
+        },
+        {
+          "label": "Dommage 2 pièces (ex. écran + Top Case)",
+          "price": 1439,
+          "acFee": 259
+        },
+        {
+          "label": "Toutes pièces / dégât liquide",
+          "price": 1799,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook Pro (16 inch, 2024)",
+      "components": [
+        {
+          "label": "Forfait réparation",
+          "price": 1099,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 289,
+          "acFee": 0
+        },
+        {
+          "label": "Dommage 1 pièce (ex. écran)",
+          "price": 979,
+          "acFee": 259
+        },
+        {
+          "label": "Dommage 2 pièces (ex. écran + Top Case)",
+          "price": 1669,
+          "acFee": 259
+        },
+        {
+          "label": "Toutes pièces / dégât liquide",
+          "price": 2009,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook Pro (16-inch, M5 Pro or M5 Max)",
+      "components": [
+        {
+          "label": "Forfait réparation",
+          "price": 1159,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 289,
+          "acFee": 0
+        },
+        {
+          "label": "Dommage 1 pièce (ex. écran)",
+          "price": 979,
+          "acFee": 259
+        },
+        {
+          "label": "Dommage 2 pièces (ex. écran + Top Case)",
+          "price": 1669,
+          "acFee": 259
+        },
+        {
+          "label": "Toutes pièces / dégât liquide",
+          "price": 2059,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook Neo (2026)",
+      "components": [
+        {
+          "label": "Forfait réparation",
+          "price": 439,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 169,
+          "acFee": 0
+        },
+        {
+          "label": "Dommage 1 pièce (ex. écran)",
+          "price": 389,
+          "acFee": 259
+        },
+        {
+          "label": "Dommage 2 pièces (ex. écran + Top Case)",
+          "price": 639,
+          "acFee": 259
+        },
+        {
+          "label": "Toutes pièces / dégât liquide",
+          "price": 689,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook (Retina, 12-inch, 2016)",
+      "components": [
+        {
+          "label": "Forfait réparation",
+          "price": 579,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 289,
+          "acFee": 0
+        },
+        {
+          "label": "Dommage 1 pièce (ex. écran)",
+          "price": 579,
+          "acFee": 99
+        },
+        {
+          "label": "Dommage 2 pièces (ex. écran + Top Case)",
+          "price": 919,
+          "acFee": 259
+        },
+        {
+          "label": "Toutes pièces / dégât liquide",
+          "price": 1169,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "MacBook Air (11-inch, 2015)",
+      "components": [
+        {
+          "label": "Forfait réparation",
+          "price": 519,
+          "acFee": 259
+        },
+        {
+          "label": "Batterie",
+          "price": 185,
+          "acFee": 0
+        },
+        {
+          "label": "Dommage 1 pièce (ex. écran)",
+          "price": 519,
+          "acFee": 99
+        },
+        {
+          "label": "Dommage 2 pièces (ex. écran + Top Case)",
+          "price": 749,
+          "acFee": 259
+        },
+        {
+          "label": "Toutes pièces / dégât liquide",
+          "price": 919,
+          "acFee": 259
+        }
+      ]
+    },
+    {
+      "name": "Accessoires Mac",
+      "components": [
+        {
+          "label": "Magic Keyboard",
+          "price": 39,
+          "acFee": 259
+        },
+        {
+          "label": "Magic Keyboard pavé num",
+          "price": 39,
+          "acFee": 259
+        },
+        {
+          "label": "Magic Keyboard Touch ID",
+          "price": 39,
+          "acFee": 259
+        },
+        {
+          "label": "Magic Keyboard Touch ID+pavé",
+          "price": 39,
+          "acFee": 259
+        },
+        {
+          "label": "Magic Mouse",
+          "price": 39,
+          "acFee": 259
+        },
+        {
+          "label": "Magic Trackpad",
+          "price": 39,
+          "acFee": 259
+        }
+      ]
+    }
+  ]
+};
+
+const CATEGORY_LABELS = {
+  iPhone:"iPhone", iPad:"iPad", Mac:"Mac", AppleWatch:"Apple Watch",
+  AirPods:"AirPods", iPod:"iPod", HomePod:"HomePod", AppleTV:"Apple TV"
+};
+
+const FR_LABELS = {
+  "Swap":"Autres dommages",
+  "Batterie":"Réparation de la batterie",
+  "Complet":"Remplacement complet",
+  "Câble":"Câble d'alimentation",
+  "Tiroir SIM":"Tiroir SIM",
+  "AirPods":"AirPods",
+  "AirPods Pro":"AirPods Pro",
+  "Boîtier Lightning":"Boîtier Lightning",
+  "Boîtier sans fil":"Boîtier sans fil",
+  "Boîtier MagSafe":"Boîtier MagSafe",
+  "Boîtier charge":"Boîtier charge",
+  "Boîtier ANC":"Boîtier ANC",
+  "Boîtier":"Boîtier",
+  "Perdu AirPods":"Perdu (AirPods)",
+  "Perdu Boîtier sans fil":"Perdu (boîtier sans fil)",
+  "Perdu Boîtier MagSafe":"Perdu (boîtier MagSafe)",
+  "Perdu Boîtier ANC":"Perdu (boîtier ANC)",
+  "Perdu":"Perdu",
+  "Batterie AirPods":"Batterie AirPods",
+  "Batterie Boîtier":"Batterie boîtier",
+  "Coussinets":"Coussinets",
+  "Case":"Étui",
+  "Smart Keyboard":"Smart Keyboard",
+  "Apple Pencil":"Apple Pencil",
+  "Apple Pencil 2e":"Apple Pencil 2e",
+  "Apple Pencil USB-C":"Apple Pencil USB-C",
+  "Apple Pencil Pro":"Apple Pencil Pro",
+  "Bouchon":"Bouchon",
+  "Batterie Pencil":"Batterie Pencil",
+  "Magic Keyboard":"Magic Keyboard",
+  "Magic Keyboard pavé num":"Magic Keyboard pavé num",
+  "Magic Keyboard Touch ID":"Magic Keyboard Touch ID",
+  "Magic Keyboard Touch ID+pavé":"Magic Keyboard Touch ID + pavé",
+  "Magic Mouse":"Magic Mouse",
+  "Magic Trackpad":"Magic Trackpad",
+  "Forfait réparation":"Forfait réparation",
+  "Dommage 1 pièce (ex. écran)":"Dommage 1 pièce (ex. écran)",
+  "Dommage 2 pièces (ex. écran + Top Case)":"Dommage 2 pièces (ex. écran + Top Case)",
+  "Toutes pièces / dégât liquide":"Toutes pièces / dégât liquide",
+  "Dégât liquide":"Dégât liquide",
+  "Top Case":"Top Case",
+  "Trackpad":"Trackpad",
+  "Carte logique":"Carte logique",
+  "Écran":"Écran",
+  "Boîtier arrière":"Boîtier arrière",
+  "Boîtier":"Boîtier",
+  "Système arrière":"Système arrière",
+  "Système central":"Système central",
+  "Haut-parleur":"Haut-parleur",
+  "Haut-parleur supérieur":"Haut-parleur supérieur",
+  "Haut-parleur inférieur":"Haut-parleur inférieur",
+  "Taptic Engine":"Taptic Engine",
+  "Caméra arrière":"Caméra arrière",
+  "Caméra TrueDepth":"Caméra TrueDepth",
+  "Caméra avant":"Caméra avant",
+  "TrueDepth":"Caméra TrueDepth",
+  "Micro principal":"Micro principal",
+  "Micro auxiliaire":"Micro auxiliaire",
+  "Verre arrière":"Verre arrière",
+  "Récepteur":"Récepteur",
+  "Vibreur":"Vibreur"
+};
+
+const CATCHALL = new Set(["Swap", "Toutes pièces / dégât liquide", "Dégât liquide"]);
+
+const AI = "https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/";
+
+const DEVICE_ART = {
+  iPhone:     { slug:"iphone-16-model-unselect-gallery-1-202409",      zoom:1.33, tx:+0.8, ty:-4.5, clip:"22.3% 0 22.3% 0" },
+  iPad:       { slug:"ipad-pro-finish-unselect-gallery-1-202405",      zoom:2.00, tx:+0.0, ty:-0.5, clip:"22.3% 0 22.3% 0" },
+  Mac:        { slug:"mac-macbook-pro-size-unselect-202601-gallery-1", zoom:1.38, tx:-0.5, ty:-2.0, clip:"18.5% 0 18.5% 0" },
+  AppleWatch: { slug:"s11-case-unselect-gallery-1-202509_GEO_FR",      zoom:1.62, tx:-0.2, ty:-3.0, clip:"18.5% 0 18.5% 0" },
+  AirPods:    { slug:"og-airpods-4-202409",                            zoom:2.10, tx:+0.7, ty:+0.5, clip:"24.2% 0 24.3% 0" },
+  iPod:       { slug:"ipod-touch-2019",                                 zoom:1.80, tx:+0.0, ty:-1.0, clip:"22.3% 0 22.3% 0" },
+  HomePod:    { slug:"homepod-mini-2024",                               zoom:1.50, tx:+0.0, ty:+0.0, clip:"20% 0 20% 0" },
+  AppleTV:    { slug:"appletv-4k-2022",                                 zoom:1.70, tx:+0.0, ty:-1.5, clip:"22.3% 0 22.3% 0" }
+};
+
+const MAC_ART = {
+  MacBookPro16: { slug:"mbp16-silver-cto-hero-202410",           zoom:0.91, tx:+0.2, ty:+0.0, clip:null, bg:"#ffffff" },
+  MacBookPro14: { slug:"mbp14-spaceblack-cto-hero-202410",       zoom:1.55, tx:+0.3, ty:-2.7, clip:null, bg:"#ffffff" },
+  MacBookAir15: { slug:"mba15-starlight-select-202503",          zoom:0.92, tx:+0.0, ty:+0.2, clip:null, bg:"#ffffff" },
+  MacBookAir13: { slug:"mba13-midnight-select-202503",           zoom:1.01, tx:+0.0, ty:-2.7, clip:null, bg:"#ffffff" },
+  MacBookNeo:   { slug:"macbook-neo-indigo-cto-hero-202603",     zoom:0.89, tx:+0.2, ty:+0.2, clip:null, bg:"#ffffff" },
+  iMac:         { slug:"imac-color-unselect-202601-gallery-1",   zoom:1.64, tx:+0.5, ty:+0.2, clip:"18.5% 0 18.5% 0", bg:"#f5f5f7" },
+  MacMini:      { slug:"mac-mini-chip-unselect-202601-gallery-1",zoom:1.77, tx:+0.2, ty:-3.3, clip:"18.5% 0 18.5% 0", bg:"#f5f5f7" },
+  MacStudio:    { slug:"mac-studio-chip-unselect-202601-gallery-1",zoom:1.93,tx:+0.2, ty:-3.3, clip:"18.5% 0 18.5% 0", bg:"#f5f5f7" }
+};
+
+function macArt(name){
+  if (/neo/i.test(name))        return MAC_ART.MacBookNeo;
+  if (/^\s*imac/i.test(name))   return MAC_ART.iMac;
+  if (/mac\s*mini/i.test(name)) return MAC_ART.MacMini;
+  if (/mac\s*studio/i.test(name)) return MAC_ART.MacStudio;
+  if (/air/i.test(name))        return /15/.test(name) ? MAC_ART.MacBookAir15 : MAC_ART.MacBookAir13;
+  if (/12[\s-]*inch/i.test(name)) return MAC_ART.MacBookAir13;
+  if (/16|15/.test(name))       return MAC_ART.MacBookPro16;
+  return MAC_ART.MacBookPro14;
+}
+
+const state = { category: null, modelIndex: 0 };
+
+function fmtPrice(p){
+  if (typeof p !== "number") return String(p);
+  return "€" + Math.round(p);
+}
+
+function sortComponents(components){
+  return components
+    .map((c, i) => ({ c, i }))
+    .sort((a, b) => {
+      const rank = x => x.c.label === "Batterie" || x.c.label === "Batterie AirPods" || x.c.label === "Batterie Boîtier" || x.c.label === "Batterie Pencil" ? 0 : (CATCHALL.has(x.c.label) ? 2 : 1);
+      const ra = rank(a), rb = rank(b);
+      return ra !== rb ? ra - rb : a.i - b.i;
+    })
+    .map(x => x.c);
+}
+
+// Category order: Mac first, then iPhone, iPad, Apple Watch, AirPods, iPod, HomePod, Apple TV
+const CATEGORY_ORDER = ["Mac", "iPhone", "iPad", "AppleWatch", "AirPods", "iPod", "HomePod", "AppleTV"];
+function availableCategories(){
+  return CATEGORY_ORDER.filter(k => DATA[k] && DATA[k].length);
+}
+
+const AIRPODS_ORDER = ["AirPods Pro 3", "AirPods Pro 2 (Lightning & USB-C)", "AirPods Pro 1", "AirPods 4", "AirPods 3", "AirPods 1 & 2", "AirPods Max 1, USB-C & 2"];
+
+function getSortedIndices(category){
+  const arr = DATA[category] || [];
+  const indices = arr.map((_, i) => i);
+
+  if (category === "iPhone"){
+    indices.reverse();
+  } else if (category === "AirPods"){
+    indices.sort((a, b) => AIRPODS_ORDER.indexOf(arr[a].name) - AIRPODS_ORDER.indexOf(arr[b].name));
+  } else if (category === "Mac" || category === "iPad"){
+    const yearOf = name => {
+      const m = name.match(/(19|20)\d{2}/);
+      return m ? parseInt(m[0], 10) : 9999;
+    };
+    indices.sort((a, b) => yearOf(arr[b].name) - yearOf(arr[a].name));
+  } else if (category === "AppleWatch"){
+    // Sort by series: Ultra first, then by series number descending, then SE
+    const sortKey = name => {
+      if (/ULTRA/i.test(name)) return [3, parseInt(name.match(/Ultra\s*(\d+)/i)?.[1] || "1")];
+      if (/SE\s*3/i.test(name)) return [2, 3];
+      if (/SE\s*2e/i.test(name)) return [2, 2];
+      if (/\bSE\b/i.test(name) && !/SE\s*[23]/i.test(name)) return [2, 1];
+      const m = name.match(/Series\s+(\d+)/i);
+      return m ? [1, parseInt(m[1])] : [0, 0];
+    };
+    indices.sort((a, b) => {
+      const [ta, sa] = sortKey(arr[a].name);
+      const [tb, sb] = sortKey(arr[b].name);
+      return ta !== tb ? tb - ta : sb - sa;
+    });
+  }
+
+  return indices;
+}
+
+function populateCategorySelect(){
+  const sel = document.getElementById('cat-select');
+  sel.innerHTML = "";
+  availableCategories().forEach(cat => {
+    const opt = document.createElement('option');
+    opt.value = cat;
+    opt.textContent = CATEGORY_LABELS[cat] || cat;
+    sel.appendChild(opt);
+  });
+  sel.value = state.category;
+}
+
+function populateModelSelect(){
+  const sel = document.getElementById('model-select');
+  sel.innerHTML = "";
+  const arr = DATA[state.category] || [];
+  const indices = getSortedIndices(state.category);
+
+  if (state.category === 'Mac' && indices.length > 12){
+    const current = [], legacy = [];
+    const yearOf = name => {
+      const m = name.match(/(19|20)\d{2}/);
+      return m ? parseInt(m[0], 10) : 9999;
+    };
+    indices.forEach(i => {
+      (yearOf(arr[i].name) >= 2024 ? current : legacy).push(i);
+    });
+    const og1 = document.createElement('optgroup');
+    og1.label = 'Gamme actuelle';
+    current.forEach(i => {
+      const opt = document.createElement('option');
+      opt.value = i; opt.textContent = arr[i].name;
+      og1.appendChild(opt);
+    });
+    sel.appendChild(og1);
+    const og2 = document.createElement('optgroup');
+    og2.label = 'Modèles précédents';
+    legacy.forEach(i => {
+      const opt = document.createElement('option');
+      opt.value = i; opt.textContent = arr[i].name;
+      og2.appendChild(opt);
+    });
+    sel.appendChild(og2);
+  } else if (state.category === 'iPhone' && indices.length > 20){
+    const recent = [], older = [];
+    indices.forEach(i => {
+      const name = arr[i].name;
+      const num = parseInt(name.match(/\d+/)?.[0]);
+      const isLegacy = /^iPhone\s*(X|SE|6|7|8|11)/i.test(name);
+      (isLegacy || (!isNaN(num) && num < 14) ? older : recent).push(i);
+    });
+    const og1 = document.createElement('optgroup');
+    og1.label = 'Récents';
+    recent.forEach(i => {
+      const opt = document.createElement('option');
+      opt.value = i; opt.textContent = arr[i].name;
+      og1.appendChild(opt);
+    });
+    sel.appendChild(og1);
+    const og2 = document.createElement('optgroup');
+    og2.label = 'Modèles précédents';
+    older.forEach(i => {
+      const opt = document.createElement('option');
+      opt.value = i; opt.textContent = arr[i].name;
+      og2.appendChild(opt);
+    });
+    sel.appendChild(og2);
+  } else if (state.category === 'AppleWatch' && indices.length > 15){
+    const seriesGroups = {};
+    const order = [];
+    indices.forEach(i => {
+      const name = arr[i].name;
+      let group;
+      if (/ULTRA/i.test(name)) group = 'Ultra & Hermès';
+      else if (/SE/i.test(name)) group = 'SE';
+      else {
+        const m = name.match(/Series\s+(\d+)/i);
+        group = m ? `Series ${m[1]}` : 'Autres';
+      }
+      if (!seriesGroups[group]) { seriesGroups[group] = []; order.push(group); }
+      seriesGroups[group].push(i);
+    });
+    order.forEach(g => {
+      const og = document.createElement('optgroup');
+      og.label = g;
+      seriesGroups[g].forEach(i => {
+        const opt = document.createElement('option');
+        opt.value = i; opt.textContent = arr[i].name;
+        og.appendChild(opt);
+      });
+      sel.appendChild(og);
+    });
+  } else {
+    indices.forEach(i => {
+      const opt = document.createElement('option');
+      opt.value = i; opt.textContent = arr[i].name;
+      sel.appendChild(opt);
+    });
+  }
+  sel.value = state.modelIndex;
+}
+
+function render(){
+  const model = DATA[state.category][state.modelIndex];
+
+  document.getElementById('cat-value').textContent = CATEGORY_LABELS[state.category] || state.category;
+  document.getElementById('model-value').textContent = model.name;
+
+  const art = state.category === 'Mac' ? macArt(model.name) : DEVICE_ART[state.category];
+  const tile = document.getElementById('device-art');
+  tile.style.background = art && art.bg ? art.bg : "";
+  tile.innerHTML = art
+    ? `<img src="${AI}${art.slug}?wid=600&hei=600&fmt=jpeg&qlt=90"
+            alt="${model.name.replace(/"/g,'&quot;')}" loading="lazy"
+            style="${art.clip ? `clip-path:inset(${art.clip});` : ""} transform:scale(${art.zoom}) translate(${art.tx}%, ${art.ty}%)">`
+    : "";
+
+  const list = document.getElementById('price-list');
+  list.innerHTML = "";
+  sortComponents(model.components).forEach(c => {
+    const row = document.createElement('div');
+    row.className = 'price-row';
+    const isNum = typeof c.price === 'number';
+    const label = FR_LABELS[c.label] || c.label;
+    const fee = (typeof c.acFee === 'number')
+      ? `<span class="ac-fee"> / €${c.acFee}</span>` : "";
+    row.innerHTML = `<div class="label">${label}</div>
+      <div class="price${isNum ? '' : ' na'}">${fmtPrice(c.price)}${fee}</div>`;
+    list.appendChild(row);
+  });
+}
+
+document.getElementById('cat-select').addEventListener('change', e => {
+  state.category = e.target.value;
+  state.modelIndex = getSortedIndices(state.category)[0];
+  populateModelSelect();
+  render();
+});
+document.getElementById('model-select').addEventListener('change', e => {
+  state.modelIndex = parseInt(e.target.value, 10);
+  render();
+});
+state.category = availableCategories()[0];
+state.modelIndex = getSortedIndices(state.category)[0];
+populateCategorySelect();
+populateModelSelect();
+render();
+
+</script>
+</body>
+</html>
