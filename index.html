@@ -293,8 +293,11 @@
     <div class="device-art" id="device-art"></div>
     <div class="price-panel">
       <div class="panel-title">Coût estimé du service</div>
+      <div class="ac-toggle" id="ac-global-toggle">
+        <button class="ac-btn active" data-mode="acplus">AppleCare+</button>
+        <button class="ac-btn" data-mode="acone">AppleCare One</button>
+      </div>
       <div id="price-list"></div>
-      <div id="ac-panel"></div>
     </div>
   </div>
 
@@ -6618,6 +6621,8 @@ function render(){
   const list = document.getElementById('price-list');
   list.innerHTML = "";
   const acRate = getAcRate(state.category, model.name);
+  const acMode = state.acMode || 'acplus';
+  const monthlyRate = acMode === 'acone' ? 20.99 : acRate;
   sortComponents(model.components).forEach(c => {
     const row = document.createElement('div');
     row.className = 'price-row';
@@ -6626,49 +6631,18 @@ function render(){
     const fee = (typeof c.acFee === 'number')
       ? `<span class="ac-fee"> / €${c.acFee}</span>` : "";
     
-    // Break-even per component with toggle
+    // Break-even per component (global toggle)
     let be = '';
-    if (acRate && isNum && typeof c.acFee === 'number' && c.price > c.acFee) {
+    if (monthlyRate && isNum && typeof c.acFee === 'number' && c.price > c.acFee) {
       const savings = c.price - c.acFee;
-      const monthsAC = Math.ceil(savings / acRate);
-      const monthsOne = Math.ceil(savings / 20.99);
-      be = `<div class="ac-note">≈ <span class="ac-toggle"><button class="ac-btn active" onclick="this.parentElement.querySelectorAll('.ac-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active');this.closest('.price-row').querySelector('.be-val').textContent='${monthsAC} mois'">AC+</button><button class="ac-btn" onclick="this.parentElement.querySelectorAll('.ac-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active');this.closest('.price-row').querySelector('.be-val').textContent='${monthsOne} mois'">AC One</button></span> <span class="be-val">${monthsAC} mois</span></div>`;
+      const months = Math.ceil(savings / monthlyRate);
+      be = `<div class="ac-note">≈ ${months} mois</div>`;
     }
     
     row.innerHTML = `<div class="label">${label}</div>
       <div class="price${isNum ? '' : ' na'}">${fmtPrice(c.price)}${fee}</div>${be}`;
     list.appendChild(row);
   });
-
-  // AppleCare+ panel
-  const acPanel = document.getElementById('ac-panel');
-  const acPlans = AC_PLUS[state.category];
-  let acHtml = '';
-  
-  // Subscriptions (AppleCare+ monthly + AppleCare One)
-  if (acRate) {
-    acHtml += '<div class="ac-subscriptions">';
-    acHtml += '<div class="ac-sub-title">Abonnement</div>';
-    acHtml += '<div class="ac-sub-sub">Prix mensuel — résiliable à tout moment</div>';
-    acHtml += `<div class="ac-sub-row"><div class="ac-sub-label">AppleCare+ <small>${state.category === 'iPhone' || state.category === 'iPad' || state.category === 'AppleWatch' ? 'avec vol et perte' : ''}</small></div><div class="ac-sub-price">${acRate.toString().replace('.', ',')}€/mois</div></div>`;
-    acHtml += `<div class="ac-sub-row"><div class="ac-sub-label">AppleCare One <small>(jusqu'à 3 appareils, +5,99€/appareil suppl.)</small></div><div class="ac-sub-price">20,99€/mois</div></div>`;
-    acHtml += '</div>';
-  }
-  
-  // Franchises panel
-  if (acPlans && acPlans.length) {
-    acHtml += '<div class="ac-panel">';
-    acHtml += '<div class="ac-panel-title">AppleCare+ — Franchises</div>';
-    acHtml += '<div class="ac-panel-sub">Franchise par incident — appareil couvert</div>';
-    acHtml += '<div class="ac-plans">';
-    acPlans.forEach(p => {
-      const priceStr = p.price === 0 ? 'Gratuit' : '€' + p.price;
-      const freeClass = p.price === 0 ? ' free' : '';
-      acHtml += `<div class="ac-plan-row"><div class="ac-plan-label">${p.label}</div><div class="ac-plan-price${freeClass}">${priceStr}</div></div>`;
-    });
-    acHtml += '</div></div>';
-  }
-  acPanel.innerHTML = acHtml;
 }
 
 document.getElementById('cat-select').addEventListener('change', e => {
@@ -6681,6 +6655,15 @@ document.getElementById('model-select').addEventListener('change', e => {
   state.modelIndex = parseInt(e.target.value, 10);
   render();
 });
+document.querySelectorAll('#ac-global-toggle .ac-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#ac-global-toggle .ac-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    state.acMode = btn.dataset.mode;
+    render();
+  });
+});
+state.acMode = 'acplus';
 state.category = availableCategories()[0];
 state.modelIndex = getSortedIndices(state.category)[0];
 populateCategorySelect();
