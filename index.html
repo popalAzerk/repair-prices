@@ -6613,6 +6613,7 @@ function render(){
 
   const list = document.getElementById('price-list');
   list.innerHTML = "";
+  const acRate = getAcRate(state.category, model.name);
   sortComponents(model.components).forEach(c => {
     const row = document.createElement('div');
     row.className = 'price-row';
@@ -6620,8 +6621,18 @@ function render(){
     const label = FR_LABELS[c.label] || c.label;
     const fee = (typeof c.acFee === 'number')
       ? `<span class="ac-fee"> / €${c.acFee}</span>` : "";
+    
+    // Break-even per component
+    let be = '';
+    if (acRate && isNum && typeof c.acFee === 'number' && c.price > c.acFee) {
+      const savings = c.price - c.acFee;
+      const monthsAC = Math.ceil(savings / acRate);
+      const monthsOne = Math.ceil(savings / 20.99);
+      be = `<div class="ac-note">≈ ${monthsAC} mois AC+ (${monthsOne} mois AC One) pour égaler ${c.price}€</div>`;
+    }
+    
     row.innerHTML = `<div class="label">${label}</div>
-      <div class="price${isNum ? '' : ' na'}">${fmtPrice(c.price)}${fee}</div>`;
+      <div class="price${isNum ? '' : ' na'}">${fmtPrice(c.price)}${fee}</div>${be}`;
     list.appendChild(row);
   });
 
@@ -6638,31 +6649,6 @@ function render(){
     acHtml += '<div class="ac-sub-sub">Prix mensuel — résiliable à tout moment</div>';
     acHtml += `<div class="ac-sub-row"><div class="ac-sub-label">AppleCare+ <small>${state.category === 'iPhone' || state.category === 'iPad' || state.category === 'AppleWatch' ? 'avec vol et perte' : ''}</small></div><div class="ac-sub-price">${acRate.toString().replace('.', ',')}€/mois</div></div>`;
     acHtml += `<div class="ac-sub-row"><div class="ac-sub-label">AppleCare One <small>(jusqu'à 3 appareils, +5,99€/appareil suppl.)</small></div><div class="ac-sub-price">20,99€/mois</div></div>`;
-    
-    // Break-even calculation: find most expensive component
-    const prices = model.components.filter(c => typeof c.price === 'number').map(c => ({label: c.label, price: c.price, acFee: c.acFee}));
-    if (prices.length) {
-      // For each component, calculate months of AC+ subscription vs OOW price
-      // Break-even = (OOW price - AC fee) / monthly rate
-      const sortedByDiff = prices.map(p => {
-        const oowCost = p.price;
-        const acCost = (typeof p.acFee === 'number') ? p.acFee : 0;
-        const savings = oowCost - acCost;
-        const monthsAC = savings > 0 && acRate > 0 ? Math.ceil(savings / acRate) : 0;
-        const monthsOne = savings > 0 ? Math.ceil(savings / 20.99) : 0;
-        return {label: p.label, oowCost, acCost, savings, monthsAC, monthsOne};
-      }).sort((a, b) => b.savings - a.savings);
-      
-      // Show break-even for the most expensive repair
-      const top = sortedByDiff[0];
-      if (top.savings > 0) {
-        acHtml += '<div class="ac-break-even">';
-        acHtml += `<p><b>Point mort</b> — réparation la plus coûteuse (${top.label}): ${top.oowCost}€ hors garantie vs ${top.acCost}€ avec AppleCare+.</p>`;
-        acHtml += `<p>Il faut <span class="be-num">${top.monthsAC} mois</span> d'abonnement AppleCare+ (${acRate.toString().replace('.', ',')}€/mois) pour égaler le coût d'une réparation hors garantie.</p>`;
-        acHtml += `<p>Avec AppleCare One (20,99€/mois pour 3 appareils): <span class="be-num">${top.monthsOne} mois</span>.</p>`;
-        acHtml += '</div>';
-      }
-    }
     acHtml += '</div>';
   }
   
