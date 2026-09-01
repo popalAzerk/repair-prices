@@ -6636,7 +6636,8 @@ function render(){
     if (monthlyRate && isNum && typeof c.acFee === 'number' && c.price > c.acFee) {
       const savings = c.price - c.acFee;
       const months = Math.ceil(savings / monthlyRate);
-      be = `<div class="ac-note">≈ ${months} mois</div>`;
+      const rateStr = monthlyRate.toString().replace('.', ',');
+      be = `<div class="ac-note">≈ ${months} mois (${rateStr}€/mois)</div>`;
     }
     
     row.innerHTML = `<div class="label">${label}</div>
