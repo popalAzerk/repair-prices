@@ -138,7 +138,11 @@
   .ac-note{
     flex:1 0 100%; text-align:right; margin-top:3px;
     font-size:11.5px; line-height:1.3; color:var(--ac-red);
+    display:flex; align-items:center; justify-content:flex-end; gap:6px;
   }
+  .ac-note .be-val{font-weight:600;}
+  .ac-note .ac-toggle{padding:1px;}
+  .ac-note .ac-btn{font-size:10.5px; padding:2px 8px;}
 
   /* ---------- AppleCare+ panel ---------- */
   .ac-panel{
@@ -6622,13 +6626,13 @@ function render(){
     const fee = (typeof c.acFee === 'number')
       ? `<span class="ac-fee"> / €${c.acFee}</span>` : "";
     
-    // Break-even per component
+    // Break-even per component with toggle
     let be = '';
     if (acRate && isNum && typeof c.acFee === 'number' && c.price > c.acFee) {
       const savings = c.price - c.acFee;
       const monthsAC = Math.ceil(savings / acRate);
       const monthsOne = Math.ceil(savings / 20.99);
-      be = `<div class="ac-note">≈ ${monthsAC} mois AC+ (${monthsOne} mois AC One) pour égaler ${c.price}€</div>`;
+      be = `<div class="ac-note">≈ <span class="ac-toggle"><button class="ac-btn active" onclick="this.parentElement.querySelectorAll('.ac-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active');this.closest('.price-row').querySelector('.be-val').textContent='${monthsAC} mois'">AC+</button><button class="ac-btn" onclick="this.parentElement.querySelectorAll('.ac-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active');this.closest('.price-row').querySelector('.be-val').textContent='${monthsOne} mois'">AC One</button></span> <span class="be-val">${monthsAC} mois</span></div>`;
     }
     
     row.innerHTML = `<div class="label">${label}</div>
