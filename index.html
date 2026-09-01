@@ -161,6 +161,32 @@
   .ac-plan-price{font-size:14px; font-weight:600; color:var(--ac-red); white-space:nowrap;}
   .ac-plan-price.free{color:var(--text-secondary); font-weight:400;}
 
+  /* ---------- AppleCare subscriptions ---------- */
+  .ac-subscriptions{
+    margin-top:20px; padding-top:20px; border-top:1px solid var(--border-soft);
+  }
+  .ac-sub-title{
+    font-size:15px; font-weight:600; margin:0 0 4px; color:var(--text);
+  }
+  .ac-sub-sub{
+    font-size:12px; color:var(--text-secondary); margin:0 0 14px;
+  }
+  .ac-sub-row{
+    display:flex; justify-content:space-between; align-items:baseline;
+    padding:10px 0; border-bottom:1px solid var(--border-soft);
+  }
+  .ac-sub-row:last-child{border-bottom:none;}
+  .ac-sub-label{font-size:14px; color:var(--text);}
+  .ac-sub-label small{color:var(--text-secondary); font-weight:400;}
+  .ac-sub-price{font-size:14px; font-weight:600; color:var(--ac-red); white-space:nowrap;}
+  .ac-break-even{
+    font-size:12px; color:var(--text-secondary); margin-top:10px;
+    background:var(--surface-2); border:1px solid var(--border-soft);
+    border-radius:10px; padding:10px 12px; line-height:1.5;
+  }
+  .ac-break-even b{color:var(--text);}
+  .ac-break-even .be-num{color:var(--ac-red); font-weight:600;}
+
   /* ---------- AppleCare plan toggle ---------- */
   .ac-toggle{
     display:inline-flex; gap:2px; padding:2px; margin:0 0 12px;
@@ -6509,6 +6535,67 @@ const AC_PLUS = {
   ]
 };
 
+function getAcRate(cat, name){
+  const n = name.toLowerCase();
+  if(cat==="iPhone"){
+    if(/6s/.test(name)) return null;
+    if(/SE \(2e/.test(name)) return 7.49;
+    if(/SE \(3e/.test(name)) return 7.49;
+    if(/7 Plus|8 Plus/.test(name)) return 10.49;
+    if(/17 Pro Max|16 Pro Max|15 Pro Max|14 Pro Max|13 Pro Max|12 Pro Max|11 Pro Max|XS Max|XS|17 Pro|16 Pro|15 Pro|14 Pro|13 Pro|12 Pro|11 Pro/.test(name)) return 14.99;
+    if(name==="iPhone X") return 14.99;
+    if(/Air/.test(name)) return 14.99;
+    if(/17e|16e/.test(name)) return 9.99;
+    if(/Plus/.test(name)) return 13.49;
+    if(/mini|Mini/.test(name)) return 11.99;
+    if(/17|16|15|14|13|12|11|XR/.test(name)) return 11.99;
+    if(/7|8/.test(name)) return 10.49;
+    return null;
+  }
+  if(cat==="Mac"){
+    if(/accessoires/i.test(name)) return null;
+    if(/16/.test(n)&&/pro/.test(n)) return 16.49;
+    if(/14/.test(n)&&/pro/.test(n)) return 11.49;
+    if(/15/.test(n)&&/air/.test(n)) return 9.49;
+    if(/13/.test(n)&&/air/.test(n)) return 8.49;
+    if(/neo/.test(n)) return 5.99;
+    if(/mini/.test(n)&&!/air/.test(n)) return 5.99;
+    if(/studio/.test(n)) return 6.99;
+    if(/imac/.test(n)) return 6.99;
+    if(/pro/.test(n)) return 11.49;
+    if(/air/.test(n)) return 8.49;
+    return null;
+  }
+  if(cat==="iPad"){
+    if(/Accessoires/.test(name)) return null;
+    if(/Pro 13/.test(name)&&!/M4|M5/.test(name)) return null;
+    if(/Pro 11/.test(name)&&!/M4|M5/.test(name)) return null;
+    if(/Pro 10\.5|Pro 12\.9/.test(name)) return null;
+    if(/Air 3e|Air 4e|Air 5e/.test(name)) return null;
+    if(/mini 5e|mini 6e/.test(name)) return null;
+    if(/^iPad (6e|7e|8e|9e|10e)/.test(name)) return null;
+    if(/Pro 13/.test(name)) return 9.49;
+    if(/Pro 11/.test(name)) return 8.49;
+    if(/Air 13/.test(name)) return 5.99;
+    if(/Air 11/.test(name)) return 4.99;
+    if(/mini/.test(name)) return 4.49;
+    if(/A16/.test(name)) return 4.49;
+    return null;
+  }
+  if(cat==="AppleWatch"){
+    if(/Series 3|Series 4|Series 5|Series 6|Series 7/.test(name)) return null;
+    if(/Ultra|Hermès/.test(name)) return 5.49;
+    if(/Acier/.test(name)) return 4.49;
+    if(/SE/.test(name)) return 2.99;
+    return 4.49;
+  }
+  if(cat==="AirPods"){ return /Max/.test(name)?2.99:1.49; }
+  if(cat==="HomePod") return 0.99;
+  if(cat==="AppleTV") return 0.99;
+  if(cat==="iPod") return 1.49;
+  return null;
+}
+
 function render(){
   const model = DATA[state.category][state.modelIndex];
 
@@ -6541,21 +6628,58 @@ function render(){
   // AppleCare+ panel
   const acPanel = document.getElementById('ac-panel');
   const acPlans = AC_PLUS[state.category];
+  const acRate = getAcRate(state.category, model.name);
+  let acHtml = '';
+  
+  // Subscriptions (AppleCare+ monthly + AppleCare One)
+  if (acRate) {
+    acHtml += '<div class="ac-subscriptions">';
+    acHtml += '<div class="ac-sub-title">Abonnement</div>';
+    acHtml += '<div class="ac-sub-sub">Prix mensuel — résiliable à tout moment</div>';
+    acHtml += `<div class="ac-sub-row"><div class="ac-sub-label">AppleCare+ <small>${state.category === 'iPhone' || state.category === 'iPad' || state.category === 'AppleWatch' ? 'avec vol et perte' : ''}</small></div><div class="ac-sub-price">${acRate.toString().replace('.', ',')}€/mois</div></div>`;
+    acHtml += `<div class="ac-sub-row"><div class="ac-sub-label">AppleCare One <small>(jusqu'à 3 appareils, +5,99€/appareil suppl.)</small></div><div class="ac-sub-price">20,99€/mois</div></div>`;
+    
+    // Break-even calculation: find most expensive component
+    const prices = model.components.filter(c => typeof c.price === 'number').map(c => ({label: c.label, price: c.price, acFee: c.acFee}));
+    if (prices.length) {
+      // For each component, calculate months of AC+ subscription vs OOW price
+      // Break-even = (OOW price - AC fee) / monthly rate
+      const sortedByDiff = prices.map(p => {
+        const oowCost = p.price;
+        const acCost = (typeof p.acFee === 'number') ? p.acFee : 0;
+        const savings = oowCost - acCost;
+        const monthsAC = savings > 0 && acRate > 0 ? Math.ceil(savings / acRate) : 0;
+        const monthsOne = savings > 0 ? Math.ceil(savings / 20.99) : 0;
+        return {label: p.label, oowCost, acCost, savings, monthsAC, monthsOne};
+      }).sort((a, b) => b.savings - a.savings);
+      
+      // Show break-even for the most expensive repair
+      const top = sortedByDiff[0];
+      if (top.savings > 0) {
+        acHtml += '<div class="ac-break-even">';
+        acHtml += `<p><b>Point mort</b> — réparation la plus coûteuse (${top.label}): ${top.oowCost}€ hors garantie vs ${top.acCost}€ avec AppleCare+.</p>`;
+        acHtml += `<p>Il faut <span class="be-num">${top.monthsAC} mois</span> d'abonnement AppleCare+ (${acRate.toString().replace('.', ',')}€/mois) pour égaler le coût d'une réparation hors garantie.</p>`;
+        acHtml += `<p>Avec AppleCare One (20,99€/mois pour 3 appareils): <span class="be-num">${top.monthsOne} mois</span>.</p>`;
+        acHtml += '</div>';
+      }
+    }
+    acHtml += '</div>';
+  }
+  
+  // Franchises panel
   if (acPlans && acPlans.length) {
-    let html = '<div class="ac-panel">';
-    html += '<div class="ac-panel-title">AppleCare+</div>';
-    html += '<div class="ac-panel-sub">Franchise par incident — appareil couvert</div>';
-    html += '<div class="ac-plans">';
+    acHtml += '<div class="ac-panel">';
+    acHtml += '<div class="ac-panel-title">AppleCare+ — Franchises</div>';
+    acHtml += '<div class="ac-panel-sub">Franchise par incident — appareil couvert</div>';
+    acHtml += '<div class="ac-plans">';
     acPlans.forEach(p => {
       const priceStr = p.price === 0 ? 'Gratuit' : '€' + p.price;
       const freeClass = p.price === 0 ? ' free' : '';
-      html += `<div class="ac-plan-row"><div class="ac-plan-label">${p.label}</div><div class="ac-plan-price${freeClass}">${priceStr}</div></div>`;
+      acHtml += `<div class="ac-plan-row"><div class="ac-plan-label">${p.label}</div><div class="ac-plan-price${freeClass}">${priceStr}</div></div>`;
     });
-    html += '</div></div>';
-    acPanel.innerHTML = html;
-  } else {
-    acPanel.innerHTML = '';
+    acHtml += '</div></div>';
   }
+  acPanel.innerHTML = acHtml;
 }
 
 document.getElementById('cat-select').addEventListener('change', e => {
