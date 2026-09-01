@@ -6633,11 +6633,15 @@ function render(){
     
     // Break-even per component (global toggle)
     let be = '';
-    if (monthlyRate && isNum && typeof c.acFee === 'number' && c.price > c.acFee) {
-      const savings = c.price - c.acFee;
-      const months = Math.ceil(savings / monthlyRate);
+    if (monthlyRate && isNum && typeof c.acFee === 'number') {
       const rateStr = monthlyRate.toString().replace('.', ',');
-      be = `<div class="ac-note">≈ ${months} mois (${rateStr}€/mois)</div>`;
+      if (c.price > c.acFee) {
+        const savings = c.price - c.acFee;
+        const months = Math.ceil(savings / monthlyRate);
+        be = `<div class="ac-note">≈ ${months} mois (${rateStr}€/mois)</div>`;
+      } else if (c.acFee > 0 && c.price > 0) {
+        be = `<div class="ac-note">Franchise AC+ (${c.acFee}€) > réparation (${c.price}€)</div>`;
+      }
     }
     
     row.innerHTML = `<div class="label">${label}</div>
