@@ -6468,6 +6468,7 @@ function macSizes(arr){
 function macFamOf(name){
   if (/^MacBook\s*PRO/i.test(name)) return 'MacBook Pro';
   if (/^MacBook\s*Air/i.test(name)) return 'MacBook Air';
+  if (/^MacBook\s*Neo/i.test(name)) return 'MacBook Neo';
   return 'Autres';
 }
 
@@ -6477,7 +6478,7 @@ function populateFamSelect(){
   const sizeBox = document.getElementById('size-box');
   if (state.category !== 'Mac'){ box.hidden = true; sizeBox.hidden = true; state.famFilter = null; state.sizeFilter = null; return; }
   box.hidden = false;
-  const fams = ['MacBook Pro', 'MacBook Air', 'Autres'].filter(f => DATA.Mac.some(m => macFamOf(m.name) === f));
+  const fams = ['MacBook Pro', 'MacBook Air', 'MacBook Neo', 'Autres'].filter(f => DATA.Mac.some(m => macFamOf(m.name) === f));
   // Par défaut : MacBook Pro présélectionné
   if (!state.famFilter && state.category === 'Mac') state.famFilter = 'MacBook Pro';
   sel.innerHTML = '';
@@ -6491,13 +6492,13 @@ function populateFamSelect(){
   });
   sel.value = state.famFilter || '';
   document.getElementById('fam-value').textContent = sel.value ? sel.value : 'Tous les Mac';
-  sizeBox.hidden = !(state.famFilter && state.famFilter !== 'Autres');
+  sizeBox.hidden = !(state.famFilter && (state.famFilter !== 'Autres' && state.famFilter !== 'MacBook Neo'));
 }
 
 function populateSizeSelect(){
   const sel = document.getElementById('size-select');
   const sizeBox = document.getElementById('size-box');
-  if (state.category !== 'Mac' || !state.famFilter || state.famFilter === 'Autres'){
+  if (state.category !== 'Mac' || !state.famFilter || state.famFilter === 'Autres' || state.famFilter === 'MacBook Neo'){
     state.sizeFilter = null;
     sizeBox.classList.add('disabled');
     sel.disabled = true;
