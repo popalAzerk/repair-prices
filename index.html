@@ -6478,6 +6478,8 @@ function populateFamSelect(){
   if (state.category !== 'Mac'){ box.hidden = true; sizeBox.hidden = true; state.famFilter = null; state.sizeFilter = null; return; }
   box.hidden = false;
   const fams = ['MacBook Pro', 'MacBook Air', 'Autres'].filter(f => DATA.Mac.some(m => macFamOf(m.name) === f));
+  // Par défaut : MacBook Pro présélectionné
+  if (!state.famFilter && state.category === 'Mac') state.famFilter = 'MacBook Pro';
   sel.innerHTML = '';
   const all = document.createElement('option');
   all.value = ''; all.textContent = 'Tous les Mac';
