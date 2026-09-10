@@ -85,7 +85,20 @@
     margin:0 0 32px; text-align:center;
   }
 
-  /* ---------- Select boxes ---------- */
+  /* ---------- Filtre tailles Mac ---------- */
+  .size-filter{margin:0 auto; max-width:480px; display:flex; flex-direction:column; gap:8px;}
+  .size-filter[hidden]{display:none;}
+  .size-label{font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; color:var(--text-secondary);}
+  .pillbar{display:flex; flex-wrap:wrap; gap:8px;}
+  .pillbar button{
+    appearance:none; border:1.5px solid var(--border); background:var(--surface);
+    color:var(--text); font-size:13px; font-weight:600; padding:7px 14px; border-radius:980px;
+    cursor:pointer; transition:border-color .15s ease, background .15s ease, color .15s ease;
+  }
+  .pillbar button:hover{border-color:var(--accent); color:var(--accent);}
+  .pillbar button.on{background:var(--accent); border-color:var(--accent); color:#fff;}
+
+/* ---------- Select boxes ---------- */
   .select-group{display:flex; flex-direction:column; gap:14px; max-width:480px; margin:0 auto;}
   .select-box{
     position:relative; border:1.5px solid var(--border); border-radius:12px;
@@ -293,6 +306,10 @@
       <select id="model-select" aria-label="Modèle"></select>
       <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
     </div>
+  </div>
+  <div class="size-filter" id="size-filter" hidden>
+    <label class="size-label">Filtrer par taille</label>
+    <div class="pillbar" id="size-pillbar"></div>
   </div>
 
   <div class="content-row">
@@ -6340,7 +6357,7 @@ function macArt(name){
   return MAC_ART.MacBookPro14;
 }
 
-const state = { category: null, modelIndex: 0 };
+const state = { category: null, modelIndex: 0, sizeFilter: null };
 
 function fmtPrice(p){
   if (typeof p !== "number") return String(p);
@@ -6412,11 +6429,60 @@ function populateCategorySelect(){
   sel.value = state.category;
 }
 
+
+function macSizeOf(name){
+  const m = name.match(/(11|12|13|14|15|16)\s*(?:[-‑]?inch|["\u2033\u201d])/i);
+  if (m) return m[1] + '"';
+  if (/^(iMac|Mac mini|Mac Studio|Accessoires|MacBook Neo)/i.test(name)) return 'Autres';
+  if (/^MacBook\s*\(Retina,\s*12/i.test(name)) return '12"';
+  if (/^MacBook\s*\(Retina/i.test(name)) return '12"';
+  return 'Autres';
+}
+
+function macSizes(arr){
+  const set = new Set();
+  arr.forEach(m => set.add(macSizeOf(m.name)));
+  const order = ['11"', '12"', '13"', '14"', '15"', '16"', 'Autres'];
+  return order.filter(s => set.has(s));
+}
+
+function renderSizeFilter(){
+  const wrap = document.getElementById('size-filter');
+  const bar = document.getElementById('size-pillbar');
+  if (state.category !== 'Mac'){ wrap.hidden = true; state.sizeFilter = null; return; }
+  wrap.hidden = false;
+  bar.innerHTML = '';
+  const mk = (label, val) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.textContent = label;
+    b.className = state.sizeFilter === val ? 'on' : '';
+    b.onclick = () => { state.sizeFilter = (state.sizeFilter === val ? null : val); renderSizeFilter(); populateModelSelect(); };
+    bar.appendChild(b);
+  };
+  mk('Toutes', null);
+  macSizes(DATA.Mac).forEach(s => mk(s, s));
+}
+
 function populateModelSelect(){
   const sel = document.getElementById('model-select');
   sel.innerHTML = "";
   const arr = DATA[state.category] || [];
-  const indices = getSortedIndices(state.category);
+  const all = getSortedIndices(state.category);
+  const indices = (state.category === 'Mac' && state.sizeFilter)
+    ? all.filter(i => macSizeOf(arr[i].name) === state.sizeFilter)
+    : all;
+  if (state.category === 'Mac' && state.sizeFilter && indices.length){
+    indices.forEach(i => {
+      const opt = document.createElement('option');
+      opt.value = i; opt.textContent = arr[i].name;
+      sel.appendChild(opt);
+    });
+    if (!indices.includes(state.modelIndex)) state.modelIndex = indices[0];
+    sel.value = state.modelIndex;
+    render();
+    return;
+  }
 
   if (state.category === 'Mac' && indices.length > 12){
     const current = [], legacy = [];
@@ -6658,7 +6724,9 @@ function render(){
 
 document.getElementById('cat-select').addEventListener('change', e => {
   state.category = e.target.value;
+  state.sizeFilter = null;
   state.modelIndex = getSortedIndices(state.category)[0];
+  renderSizeFilter();
   populateModelSelect();
   render();
 });
@@ -6678,6 +6746,7 @@ state.acMode = 'acplus';
 state.category = availableCategories()[0];
 state.modelIndex = getSortedIndices(state.category)[0];
 populateCategorySelect();
+renderSizeFilter();
 populateModelSelect();
 render();
 
