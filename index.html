@@ -89,7 +89,12 @@
   #mac-filters[hidden]{display:none;}
 
 /* ---------- Select boxes ---------- */
-  .select-group{display:flex; flex-direction:column; gap:14px; max-width:480px; margin:0 auto;}
+  .select-box[hidden]{display:none;}
+  .select-box.disabled{opacity:.45; pointer-events:none;}
+  @media (min-width: 720px){
+    .select-group{display:grid; grid-template-columns:1fr 1fr; gap:14px 16px; max-width:720px;}
+  }
+  
   .select-box{
     position:relative; border:1.5px solid var(--border); border-radius:12px;
     padding:9px 42px 9px 16px; background:var(--surface);
@@ -290,24 +295,22 @@
       <select id="cat-select" aria-label="Type d'appareil"></select>
       <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
     </div>
-    <div class="select-box">
-      <label for="model-select">Modèle</label>
-      <div class="value" id="model-value"></div>
-      <select id="model-select" aria-label="Modèle"></select>
-      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-    </div>
-  </div>
-  <div class="select-group" id="mac-filters" hidden>
-    <div class="select-box" id="fam-box">
+    <div class="select-box" id="fam-box" hidden>
       <label for="fam-select">Produit</label>
       <div class="value" id="fam-value"></div>
       <select id="fam-select" aria-label="Produit Mac"></select>
       <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
     </div>
-    <div class="select-box" id="size-box">
+    <div class="select-box" id="size-box" hidden>
       <label for="size-select">Taille</label>
       <div class="value" id="size-value"></div>
       <select id="size-select" aria-label="Taille"></select>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="select-box">
+      <label for="model-select">Modèle</label>
+      <div class="value" id="model-value"></div>
+      <select id="model-select" aria-label="Modèle"></select>
       <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
     </div>
   </div>
@@ -6469,11 +6472,11 @@ function macFamOf(name){
 }
 
 function populateFamSelect(){
-  const wrap = document.getElementById('mac-filters');
+  const box = document.getElementById('fam-box');
   const sel = document.getElementById('fam-select');
   const sizeBox = document.getElementById('size-box');
-  if (state.category !== 'Mac'){ wrap.hidden = true; state.famFilter = null; state.sizeFilter = null; return; }
-  wrap.hidden = false;
+  if (state.category !== 'Mac'){ box.hidden = true; sizeBox.hidden = true; state.famFilter = null; state.sizeFilter = null; return; }
+  box.hidden = false;
   const fams = ['MacBook Pro', 'MacBook Air', 'Autres'].filter(f => DATA.Mac.some(m => macFamOf(m.name) === f));
   sel.innerHTML = '';
   const all = document.createElement('option');
@@ -6486,7 +6489,7 @@ function populateFamSelect(){
   });
   sel.value = state.famFilter || '';
   document.getElementById('fam-value').textContent = sel.value ? sel.value : 'Tous les Mac';
-  sizeBox.style.display = (state.famFilter && state.famFilter !== 'Autres') ? '' : 'none';
+  sizeBox.hidden = !(state.famFilter && state.famFilter !== 'Autres');
 }
 
 function populateSizeSelect(){
@@ -6494,10 +6497,14 @@ function populateSizeSelect(){
   const sizeBox = document.getElementById('size-box');
   if (state.category !== 'Mac' || !state.famFilter || state.famFilter === 'Autres'){
     state.sizeFilter = null;
-    sizeBox.style.display = 'none';
+    sizeBox.classList.add('disabled');
+    sel.disabled = true;
+    document.getElementById('size-value').textContent = 'Choisissez d\'abord un produit';
     return;
   }
-  sizeBox.style.display = '';
+  sizeBox.classList.remove('disabled');
+  sizeBox.hidden = false;
+  sel.disabled = false;
   sel.innerHTML = '';
   const all = document.createElement('option');
   all.value = ''; all.textContent = 'Toutes';
@@ -6791,6 +6798,7 @@ document.getElementById('fam-select').addEventListener('change', e => {
 });
 document.getElementById('size-select').addEventListener('change', e => {
   state.sizeFilter = e.target.value || null;
+  document.getElementById('size-value').textContent = e.target.value || 'Toutes';
   populateModelSelect();
 });
 document.getElementById('model-select').addEventListener('change', e => {
