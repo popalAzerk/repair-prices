@@ -86,6 +86,7 @@
   }
 
   /* ---------- Filtre tailles Mac ---------- */
+  #mac-filters[hidden]{display:none;}
   .size-filter{margin:0 auto; max-width:480px; display:flex; flex-direction:column; gap:8px;}
   .size-filter[hidden]{display:none;}
   .size-label{font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; color:var(--text-secondary);}
@@ -307,11 +308,19 @@
       <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
     </div>
   </div>
-  <div class="size-filter" id="size-filter" hidden>
-    <label class="size-label">Choisir la gamme</label>
-    <div class="pillbar" id="fam-pillbar"></div>
-    <label class="size-label" id="size-label">Choisir la taille</label>
-    <div class="pillbar" id="size-pillbar"></div>
+  <div class="select-group" id="mac-filters" hidden>
+    <div class="select-box" id="fam-box">
+      <label for="fam-select">Produit</label>
+      <div class="value" id="fam-value"></div>
+      <select id="fam-select" aria-label="Produit Mac"></select>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="select-box" id="size-box">
+      <label for="size-select">Taille</label>
+      <div class="value" id="size-value"></div>
+      <select id="size-select" aria-label="Taille"></select>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
   </div>
 
   <div class="content-row">
@@ -6393,12 +6402,27 @@ function getSortedIndices(category){
     indices.reverse();
   } else if (category === "AirPods"){
     indices.sort((a, b) => AIRPODS_ORDER.indexOf(arr[a].name) - AIRPODS_ORDER.indexOf(arr[b].name));
-  } else if (category === "Mac" || category === "iPad"){
+  } else if (category === "iPad"){
     const yearOf = name => {
       const m = name.match(/(19|20)\d{2}/);
       return m ? parseInt(m[0], 10) : 9999;
     };
     indices.sort((a, b) => yearOf(arr[b].name) - yearOf(arr[a].name));
+  } else if (category === "Mac"){
+    const yearOf = name => {
+      const m = name.match(/(19|20)\d{2}/);
+      return m ? parseInt(m[0], 10) : 9999;
+    };
+    // Fiches actuelles sans année (ex: "MacBook PRO 14\"", "MacBook Neo") = les plus récentes
+    const rank = name => {
+      if (/^MacBook\s*(PRO|Air)\s*\d/.test(name)) return 3000 + (/15/.test(name) ? 10 : 0) + (/PRO/i.test(name) ? 20 : 0);
+      if (/^MacBook\s*Neo/i.test(name)) return 2990;
+      if (/^MacBook Pro \(.*M5/i.test(name)) return 2900 + (/14/.test(name) ? 10 : 0);
+      if (/^(iMac|Mac mini|Mac Studio)/i.test(name)) return 2880;
+      if (/^Accessoires/i.test(name)) return 0;
+      return yearOf(name);
+    };
+    indices.sort((a, b) => rank(arr[b].name) - rank(arr[a].name));
   } else if (category === "AppleWatch"){
     // Sort by series: Ultra first, then by series number descending, then SE
     const sortKey = name => {
@@ -6455,50 +6479,48 @@ function macFamOf(name){
   return 'Autres';
 }
 
-function renderFamFilter(){
-  const bar = document.getElementById('fam-pillbar');
-  bar.innerHTML = '';
-  const counts = {};
-  DATA.Mac.forEach(m => { const f = macFamOf(m.name); counts[f] = (counts[f] || 0) + 1; });
-  const mk = (label, val) => {
-    const b = document.createElement('button');
-    b.type = 'button';
-    b.textContent = label + ' (' + counts[val] + ')';
-    b.className = state.famFilter === val ? 'on' : '';
-    b.onclick = () => {
-      state.famFilter = (state.famFilter === val ? null : val);
-      state.sizeFilter = null;
-      renderFamFilter();
-      renderSizeFilter();
-      populateModelSelect();
-    };
-    bar.appendChild(b);
-  };
-  ['MacBook Pro', 'MacBook Air', 'Autres'].forEach(f => mk(f, f));
+function populateFamSelect(){
+  const wrap = document.getElementById('mac-filters');
+  const sel = document.getElementById('fam-select');
+  const sizeBox = document.getElementById('size-box');
+  if (state.category !== 'Mac'){ wrap.hidden = true; state.famFilter = null; state.sizeFilter = null; return; }
+  wrap.hidden = false;
+  const fams = ['MacBook Pro', 'MacBook Air', 'Autres'].filter(f => DATA.Mac.some(m => macFamOf(m.name) === f));
+  sel.innerHTML = '';
+  const all = document.createElement('option');
+  all.value = ''; all.textContent = 'Tous les Mac';
+  sel.appendChild(all);
+  fams.forEach(f => {
+    const opt = document.createElement('option');
+    opt.value = f; opt.textContent = f;
+    sel.appendChild(opt);
+  });
+  sel.value = state.famFilter || '';
+  document.getElementById('fam-value').textContent = sel.value ? sel.value : 'Tous les Mac';
+  sizeBox.style.display = (state.famFilter && state.famFilter !== 'Autres') ? '' : 'none';
 }
 
-function renderSizeFilter(){
-  const wrap = document.getElementById('size-filter');
-  const bar = document.getElementById('size-pillbar');
-  const sizeLbl = document.getElementById('size-label');
-  if (state.category !== 'Mac'){ wrap.hidden = true; state.sizeFilter = null; return; }
-  wrap.hidden = false;
-  const isSizeable = state.famFilter && state.famFilter !== 'Autres';
-  sizeLbl.style.display = isSizeable ? '' : 'none';
-  bar.style.display = isSizeable ? '' : 'none';
-  bar.innerHTML = '';
-  if (!isSizeable) return;
-  const mk = (label, val) => {
-    const b = document.createElement('button');
-    b.type = 'button';
-    b.textContent = label;
-    b.className = state.sizeFilter === val ? 'on' : '';
-    b.onclick = () => { state.sizeFilter = (state.sizeFilter === val ? null : val); renderSizeFilter(); populateModelSelect(); };
-    bar.appendChild(b);
-  };
-  mk('Toutes', null);
+function populateSizeSelect(){
+  const sel = document.getElementById('size-select');
+  const sizeBox = document.getElementById('size-box');
+  if (state.category !== 'Mac' || !state.famFilter || state.famFilter === 'Autres'){
+    state.sizeFilter = null;
+    sizeBox.style.display = 'none';
+    return;
+  }
+  sizeBox.style.display = '';
+  sel.innerHTML = '';
+  const all = document.createElement('option');
+  all.value = ''; all.textContent = 'Toutes';
+  sel.appendChild(all);
   const pool = DATA.Mac.filter(m => macFamOf(m.name) === state.famFilter);
-  macSizes(pool).forEach(s => mk(s, s));
+  macSizes(pool).forEach(s => {
+    const opt = document.createElement('option');
+    opt.value = s; opt.textContent = s;
+    sel.appendChild(opt);
+  });
+  sel.value = state.sizeFilter || '';
+  document.getElementById('size-value').textContent = sel.value || 'Toutes';
 }
 
 function populateModelSelect(){
@@ -6519,6 +6541,7 @@ function populateModelSelect(){
     });
     if (!indices.includes(state.modelIndex)) state.modelIndex = indices[0];
     sel.value = state.modelIndex;
+    document.getElementById('model-value').textContent = arr[state.modelIndex].name;
     render();
     return;
   }
@@ -6766,9 +6789,20 @@ document.getElementById('cat-select').addEventListener('change', e => {
   state.sizeFilter = null;
   state.famFilter = null;
   state.modelIndex = getSortedIndices(state.category)[0];
-  renderSizeFilter();
+  populateFamSelect();
+  populateSizeSelect();
   populateModelSelect();
   render();
+});
+document.getElementById('fam-select').addEventListener('change', e => {
+  state.famFilter = e.target.value || null;
+  state.sizeFilter = null;
+  populateSizeSelect();
+  populateModelSelect();
+});
+document.getElementById('size-select').addEventListener('change', e => {
+  state.sizeFilter = e.target.value || null;
+  populateModelSelect();
 });
 document.getElementById('model-select').addEventListener('change', e => {
   state.modelIndex = parseInt(e.target.value, 10);
@@ -6786,10 +6820,9 @@ state.acMode = 'acplus';
 state.category = availableCategories()[0];
 state.modelIndex = getSortedIndices(state.category)[0];
 populateCategorySelect();
-renderFamFilter();
-renderSizeFilter();
+populateFamSelect();
+populateSizeSelect();
 populateModelSelect();
-render();
 
 </script>
 </body>
