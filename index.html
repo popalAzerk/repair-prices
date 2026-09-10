@@ -308,7 +308,9 @@
     </div>
   </div>
   <div class="size-filter" id="size-filter" hidden>
-    <label class="size-label">Filtrer par taille</label>
+    <label class="size-label">Choisir la gamme</label>
+    <div class="pillbar" id="fam-pillbar"></div>
+    <label class="size-label" id="size-label">Choisir la taille</label>
     <div class="pillbar" id="size-pillbar"></div>
   </div>
 
@@ -6357,7 +6359,7 @@ function macArt(name){
   return MAC_ART.MacBookPro14;
 }
 
-const state = { category: null, modelIndex: 0, sizeFilter: null };
+const state = { category: null, modelIndex: 0, sizeFilter: null, famFilter: null };
 
 function fmtPrice(p){
   if (typeof p !== "number") return String(p);
@@ -6446,12 +6448,46 @@ function macSizes(arr){
   return order.filter(s => set.has(s));
 }
 
+
+function macFamOf(name){
+  if (/^MacBook\s*PRO/i.test(name)) return 'MacBook Pro';
+  if (/^MacBook\s*Air/i.test(name)) return 'MacBook Air';
+  return 'Autres';
+}
+
+function renderFamFilter(){
+  const bar = document.getElementById('fam-pillbar');
+  bar.innerHTML = '';
+  const counts = {};
+  DATA.Mac.forEach(m => { const f = macFamOf(m.name); counts[f] = (counts[f] || 0) + 1; });
+  const mk = (label, val) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.textContent = label + ' (' + counts[val] + ')';
+    b.className = state.famFilter === val ? 'on' : '';
+    b.onclick = () => {
+      state.famFilter = (state.famFilter === val ? null : val);
+      state.sizeFilter = null;
+      renderFamFilter();
+      renderSizeFilter();
+      populateModelSelect();
+    };
+    bar.appendChild(b);
+  };
+  ['MacBook Pro', 'MacBook Air', 'Autres'].forEach(f => mk(f, f));
+}
+
 function renderSizeFilter(){
   const wrap = document.getElementById('size-filter');
   const bar = document.getElementById('size-pillbar');
+  const sizeLbl = document.getElementById('size-label');
   if (state.category !== 'Mac'){ wrap.hidden = true; state.sizeFilter = null; return; }
   wrap.hidden = false;
+  const isSizeable = state.famFilter && state.famFilter !== 'Autres';
+  sizeLbl.style.display = isSizeable ? '' : 'none';
+  bar.style.display = isSizeable ? '' : 'none';
   bar.innerHTML = '';
+  if (!isSizeable) return;
   const mk = (label, val) => {
     const b = document.createElement('button');
     b.type = 'button';
@@ -6461,7 +6497,8 @@ function renderSizeFilter(){
     bar.appendChild(b);
   };
   mk('Toutes', null);
-  macSizes(DATA.Mac).forEach(s => mk(s, s));
+  const pool = DATA.Mac.filter(m => macFamOf(m.name) === state.famFilter);
+  macSizes(pool).forEach(s => mk(s, s));
 }
 
 function populateModelSelect(){
@@ -6469,10 +6506,12 @@ function populateModelSelect(){
   sel.innerHTML = "";
   const arr = DATA[state.category] || [];
   const all = getSortedIndices(state.category);
-  const indices = (state.category === 'Mac' && state.sizeFilter)
-    ? all.filter(i => macSizeOf(arr[i].name) === state.sizeFilter)
+  const indices = (state.category === 'Mac' && (state.famFilter || state.sizeFilter))
+    ? all.filter(i =>
+        (!state.famFilter || macFamOf(arr[i].name) === state.famFilter) &&
+        (!state.sizeFilter || macSizeOf(arr[i].name) === state.sizeFilter))
     : all;
-  if (state.category === 'Mac' && state.sizeFilter && indices.length){
+  if (state.category === 'Mac' && (state.famFilter || state.sizeFilter) && indices.length){
     indices.forEach(i => {
       const opt = document.createElement('option');
       opt.value = i; opt.textContent = arr[i].name;
@@ -6725,6 +6764,7 @@ function render(){
 document.getElementById('cat-select').addEventListener('change', e => {
   state.category = e.target.value;
   state.sizeFilter = null;
+  state.famFilter = null;
   state.modelIndex = getSortedIndices(state.category)[0];
   renderSizeFilter();
   populateModelSelect();
@@ -6746,6 +6786,7 @@ state.acMode = 'acplus';
 state.category = availableCategories()[0];
 state.modelIndex = getSortedIndices(state.category)[0];
 populateCategorySelect();
+renderFamFilter();
 renderSizeFilter();
 populateModelSelect();
 render();
