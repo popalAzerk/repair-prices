@@ -6869,7 +6869,7 @@ function render(){
     const rowVP = document.createElement('div');
     rowVP.className = 'price-row';
     rowVP.innerHTML = `<div class="label">Vol ou perte</div>
-      <div class="price">Achat PZ requis</div>`;
+      <div class="price">Achat PZ requis <span class="ac-fee">/ €${vpFee}</span></div>`;
     list.appendChild(rowVP);
   }
 }
