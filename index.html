@@ -6860,6 +6860,16 @@ function render(){
       <div class="price${isNum ? '' : ' na'}">${fmtPrice(c.price)}${fee}</div>${be}`;
     list.appendChild(row);
   });
+
+  // Frais « Vol ou perte » (AppleCare+ iPhone avec abonnement = perte/vol couvert)
+  if (state.category === 'iPhone' && acMode === 'acplus' && monthlyRate) {
+    const rowVP = document.createElement('div');
+    rowVP.className = 'price-row';
+    rowVP.innerHTML = `<div class="label">Vol ou perte</div>
+      <div class="price">€129 <span class="ac-fee">/ franchise</span></div>
+      <div class="ac-note">Appareil remplacé en cas de vol ou perte déclaré</div>`;
+    list.appendChild(rowVP);
+  }
 }
 
 document.getElementById('cat-select').addEventListener('change', e => {
