@@ -6412,6 +6412,26 @@ function getSortedIndices(category){
       return y === 9999 ? 0 : y;
     };
     indices.sort((a, b) => rank(arr[b].name) - rank(arr[a].name));
+  } else if (category === "AppleWatch"){
+    // Ultra (3>2>1, Hermès inclus) > Series (11->3) > SE (3>2>1)
+    const seriesNum = name => {
+      const m = name.match(/Series\s*(\d+)/);
+      return m ? parseInt(m[1], 10) : 0;
+    };
+    const rank = name => {
+      if (/^Apple Watch Ultra/i.test(name)){
+        const un = name.match(/Ultra\s*(\d+)/);
+        const n = un ? parseInt(un[1], 10) : 1;
+        return 4000 + n * 10 + (/Herm\ès/i.test(name) ? 1 : 0);
+      }
+      if (/^Apple Watch Series/i.test(name)) return 3000 + seriesNum(name) * 10;
+      if (/^Apple Watch SE/i.test(name)){
+        const sn = name.match(/SE\s*(\d)/);
+        return 2000 + (sn ? parseInt(sn[1], 10) : 1) * 10;
+      }
+      return 0;
+    };
+    indices.sort((a, b) => rank(arr[b].name) - rank(arr[a].name) || seriesNum(arr[b].name) - seriesNum(arr[a].name));
   } else if (category === "Mac"){
     const yearOf = name => {
       const m = name.match(/(19|20)\d{2}/);
@@ -6501,11 +6521,18 @@ function ipadFamOf(name){
   return 'iPad'; // classiques (A16, 6e-10e)
 }
 
+
+function watchFamOf(name){
+  if (/^Apple Watch Ultra\b/i.test(name)) return 'Apple Watch Ultra';
+  if (/^Apple Watch SE\b/.test(name)) return 'Apple Watch SE';
+  return 'Apple Watch Series';
+}
+
 function populateFamSelect(){
   const box = document.getElementById('fam-box');
   const sel = document.getElementById('fam-select');
   const sizeBox = document.getElementById('size-box');
-  if (state.category !== 'Mac' && state.category !== 'iPhone' && state.category !== 'iPad'){ box.hidden = true; sizeBox.hidden = true; state.famFilter = null; state.sizeFilter = null; return; }
+  if (state.category !== 'Mac' && state.category !== 'iPhone' && state.category !== 'iPad' && state.category !== 'AppleWatch'){ box.hidden = true; sizeBox.hidden = true; state.famFilter = null; state.sizeFilter = null; return; }
   box.hidden = false;
   let fams, famOf, allLabel;
   if (state.category === 'Mac'){
@@ -6518,6 +6545,12 @@ function populateFamSelect(){
       .filter(f => DATA.iPhone.some(m => iphoneFamOf(m.name) === f));
     famOf = iphoneFamOf; allLabel = 'Tous les iPhone';
     if (!state.famFilter) state.famFilter = 'iPhone Air';
+  } else if (state.category === 'AppleWatch'){
+    // Ordre demandé : Ultra d'abord, puis Apple Watch (Series), puis SE
+    fams = ['Apple Watch Ultra', 'Apple Watch Series', 'Apple Watch SE']
+      .filter(f => DATA.AppleWatch.some(m => watchFamOf(m.name) === f));
+    famOf = watchFamOf; allLabel = 'Toutes les Watch';
+    if (!state.famFilter) state.famFilter = 'Apple Watch Ultra';
   } else { // iPad
     fams = ['iPad Pro', 'iPad Air', 'iPad mini', 'iPad', 'Accessoires iPad']
       .filter(f => DATA.iPad.some(m => ipadFamOf(m.name) === f));
@@ -6570,7 +6603,7 @@ function populateModelSelect(){
   sel.innerHTML = "";
   const arr = DATA[state.category] || [];
   const all = getSortedIndices(state.category);
-  const famOf = state.category === 'Mac' ? macFamOf : state.category === 'iPhone' ? iphoneFamOf : state.category === 'iPad' ? ipadFamOf : null;
+  const famOf = state.category === 'Mac' ? macFamOf : state.category === 'iPhone' ? iphoneFamOf : state.category === 'iPad' ? ipadFamOf : state.category === 'AppleWatch' ? watchFamOf : null;
   const indices = (famOf && (state.famFilter || state.sizeFilter))
     ? all.filter(i =>
         (!state.famFilter || famOf(arr[i].name) === state.famFilter) &&
