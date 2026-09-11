@@ -6861,13 +6861,16 @@ function render(){
     list.appendChild(row);
   });
 
-  // Frais « Vol ou perte » (AppleCare+ iPhone avec abonnement = perte/vol couvert)
-  if (state.category === 'iPhone' && acMode === 'acplus' && monthlyRate) {
+  // Frais « Vol ou perte » (AppleCare+ avec couverture perte et vol — option:
+  // iPhone/iPad 129 €, Apple Watch 119 € — 2 déclarations/an, source apple.com/fr/applecare)
+  const VP_FEE = { iPhone: 129, iPad: 129, AppleWatch: 119 };
+  const vpFee = VP_FEE[state.category];
+  if (vpFee && acMode === 'acplus' && monthlyRate) {
     const rowVP = document.createElement('div');
     rowVP.className = 'price-row';
     rowVP.innerHTML = `<div class="label">Vol ou perte</div>
-      <div class="price">€129 <span class="ac-fee">/ franchise</span></div>
-      <div class="ac-note">Appareil remplacé en cas de vol ou perte déclaré</div>`;
+      <div class="price">€${vpFee} <span class="ac-fee">/ franchise</span></div>
+      <div class="ac-note">Appareil remplacé en cas de vol ou perte déclaré — option « AppleCare+ avec couverture en cas de perte ou de vol », 2 déclarations/an</div>`;
     list.appendChild(rowVP);
   }
 }
