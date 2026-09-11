@@ -6865,7 +6865,7 @@ function render(){
   // iPhone/iPad 129 €, Apple Watch 119 € — 2 déclarations/an, source apple.com/fr/applecare)
   const VP_FEE = { iPhone: 129, iPad: 129, AppleWatch: 119 };
   const vpFee = VP_FEE[state.category];
-  if (vpFee && acMode === 'acplus' && monthlyRate) {
+  if (vpFee && acMode === 'acplus') {
     const rowVP = document.createElement('div');
     rowVP.className = 'price-row';
     rowVP.innerHTML = `<div class="label">Vol ou perte</div>
