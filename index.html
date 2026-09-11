@@ -6400,7 +6400,18 @@ function getSortedIndices(category){
       const m = name.match(/(19|20)\d{2}/);
       return m ? parseInt(m[0], 10) : 9999;
     };
-    indices.sort((a, b) => yearOf(arr[b].name) - yearOf(arr[a].name));
+    // Fiches récentes sans année (M5/M4/A16/A17) en tête, années décroissantes ensuite
+    const rank = name => {
+      if (/^iPad\s*Pro\s*\d+\s*M5/i.test(name)) return 3000 + (/13/i.test(name) ? 10 : 0);
+      if (/^iPad\s*Air\s*\d+\s*M4/i.test(name)) return 2950 + (/13/i.test(name) ? 10 : 0);
+      if (/^iPad\s*Pro\s*\d+\s*M4/i.test(name)) return 2900 + (/13/i.test(name) ? 10 : 0);
+      if (/^iPad\s*Air\s*\d+\s*M3/i.test(name)) return 2850 + (/13/i.test(name) ? 10 : 0);
+      if (/^iPad\s*mini\s*A17/i.test(name)) return 2800;
+      if (/^iPad\s*A16/i.test(name)) return 2750;
+      const y = yearOf(name);
+      return y === 9999 ? 0 : y;
+    };
+    indices.sort((a, b) => rank(arr[b].name) - rank(arr[a].name));
   } else if (category === "Mac"){
     const yearOf = name => {
       const m = name.match(/(19|20)\d{2}/);
@@ -6473,18 +6484,49 @@ function macFamOf(name){
   return 'Autres';
 }
 
+
+function iphoneFamOf(name){
+  if (/^iPhone Air/i.test(name)) return 'iPhone Air';
+  if (/^Accessoires/i.test(name)) return 'Accessoires iPhone';
+  if (/^iPhone\s*\d+\s*Pro/i.test(name)) return 'iPhone Pro';
+  if (/^iPhone\s*\d+\s*mini/i.test(name)) return 'iPhone mini';
+  if (/^iPhone\s*\d+\s*Plus/i.test(name)) return 'iPhone Plus';
+  return 'iPhone'; // numéros classiques (6s, 7, X, XR, 11, 12..17, e, SE)
+}
+function ipadFamOf(name){
+  if (/^iPad\s*Pro/i.test(name)) return 'iPad Pro';
+  if (/^iPad\s*Air/i.test(name)) return 'iPad Air';
+  if (/^iPad\s*mini/i.test(name)) return 'iPad mini';
+  if (/^Accessoires/i.test(name)) return 'Accessoires iPad';
+  return 'iPad'; // classiques (A16, 6e-10e)
+}
+
 function populateFamSelect(){
   const box = document.getElementById('fam-box');
   const sel = document.getElementById('fam-select');
   const sizeBox = document.getElementById('size-box');
-  if (state.category !== 'Mac'){ box.hidden = true; sizeBox.hidden = true; state.famFilter = null; state.sizeFilter = null; return; }
+  if (state.category !== 'Mac' && state.category !== 'iPhone' && state.category !== 'iPad'){ box.hidden = true; sizeBox.hidden = true; state.famFilter = null; state.sizeFilter = null; return; }
   box.hidden = false;
-  const fams = ['MacBook Pro', 'MacBook Air', 'MacBook Neo', 'Autres'].filter(f => DATA.Mac.some(m => macFamOf(m.name) === f));
-  // Par défaut : MacBook Pro présélectionné
-  if (!state.famFilter && state.category === 'Mac') state.famFilter = 'MacBook Pro';
+  let fams, famOf, allLabel;
+  if (state.category === 'Mac'){
+    fams = ['MacBook Pro', 'MacBook Air', 'MacBook Neo', 'Autres'].filter(f => DATA.Mac.some(m => macFamOf(m.name) === f));
+    famOf = macFamOf; allLabel = 'Tous les Mac';
+    if (!state.famFilter) state.famFilter = 'MacBook Pro';
+  } else if (state.category === 'iPhone'){
+    // Ordre demandé : Air en 1er, Pro, Numéro, mini, Plus, Accessoires en dernier
+    fams = ['iPhone Air', 'iPhone Pro', 'iPhone', 'iPhone mini', 'iPhone Plus', 'Accessoires iPhone']
+      .filter(f => DATA.iPhone.some(m => iphoneFamOf(m.name) === f));
+    famOf = iphoneFamOf; allLabel = 'Tous les iPhone';
+    if (!state.famFilter) state.famFilter = 'iPhone Air';
+  } else { // iPad
+    fams = ['iPad Pro', 'iPad Air', 'iPad mini', 'iPad', 'Accessoires iPad']
+      .filter(f => DATA.iPad.some(m => ipadFamOf(m.name) === f));
+    famOf = ipadFamOf; allLabel = 'Tous les iPad';
+    if (!state.famFilter) state.famFilter = 'iPad Pro';
+  }
   sel.innerHTML = '';
   const all = document.createElement('option');
-  all.value = ''; all.textContent = 'Tous les Mac';
+  all.value = ''; all.textContent = allLabel;
   sel.appendChild(all);
   fams.forEach(f => {
     const opt = document.createElement('option');
@@ -6493,7 +6535,7 @@ function populateFamSelect(){
   });
   sel.value = state.famFilter || '';
   document.getElementById('fam-value').textContent = sel.value ? sel.value : 'Tous les Mac';
-  sizeBox.hidden = !(state.famFilter && (state.famFilter !== 'Autres' && state.famFilter !== 'MacBook Neo'));
+  sizeBox.hidden = state.category !== 'Mac' || !(state.famFilter && (state.famFilter !== 'Autres' && state.famFilter !== 'MacBook Neo'));
 }
 
 function populateSizeSelect(){
@@ -6528,12 +6570,13 @@ function populateModelSelect(){
   sel.innerHTML = "";
   const arr = DATA[state.category] || [];
   const all = getSortedIndices(state.category);
-  const indices = (state.category === 'Mac' && (state.famFilter || state.sizeFilter))
+  const famOf = state.category === 'Mac' ? macFamOf : state.category === 'iPhone' ? iphoneFamOf : state.category === 'iPad' ? ipadFamOf : null;
+  const indices = (famOf && (state.famFilter || state.sizeFilter))
     ? all.filter(i =>
-        (!state.famFilter || macFamOf(arr[i].name) === state.famFilter) &&
+        (!state.famFilter || famOf(arr[i].name) === state.famFilter) &&
         (!state.sizeFilter || macSizeOf(arr[i].name) === state.sizeFilter))
     : all;
-  if (state.category === 'Mac' && (state.famFilter || state.sizeFilter) && indices.length){
+  if (famOf && (state.famFilter || state.sizeFilter) && indices.length){
     indices.forEach(i => {
       const opt = document.createElement('option');
       opt.value = i; opt.textContent = arr[i].name;
@@ -6546,7 +6589,7 @@ function populateModelSelect(){
     return;
   }
 
-  if (state.category === 'Mac' && indices.length > 12){
+  if (indices.length > 12){
     const current = [], legacy = [];
     const yearOf = name => {
       const m = name.match(/(19|20)\d{2}/);
