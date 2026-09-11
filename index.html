@@ -149,6 +149,12 @@
   .price-row .price{font-size:16px; font-weight:600; white-space:nowrap; flex:0 0 auto;}
   .price-row .price.na{color:var(--text-secondary); font-weight:400; font-size:13.5px;}
   .ac-fee{color:var(--ac-red);}
+  .status-badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;
+    padding:3px 10px;border-radius:980px;margin-left:8px;vertical-align:2px;}
+  .status-badge.vintage{background:rgba(255,214,10,.15);color:#b25000;border:1px solid rgba(255,214,10,.5);}
+  .status-badge.obsolete{background:rgba(215,0,21,.1);color:var(--ac-red);border:1px solid rgba(215,0,21,.4);}
+  .status-note{font-size:12px;color:var(--muted, #86868b);margin:6px 0 0;line-height:1.4;}
+  .panel-obsolete .price-row .price{color:var(--ac-red);font-weight:600;}
   /* Own full-width line so it never competes with the label for horizontal space. */
   .ac-note{
     flex:1 0 100%; text-align:right; margin-top:3px;
@@ -6255,6 +6261,18 @@ const DATA = {
   ]
 };
 
+// Statut de service Apple (source: support.apple.com/fr-fr/102772, 11/09/2026)
+const PRODUCT_STATUS = {"iPhone": {"iPhone 6s": "vintage", "iPhone 6s Plus": "vintage", "iPhone 7": "vintage", "iPhone 7 Plus": "vintage", "iPhone 8": "vintage", "iPhone 8 Plus": "vintage", "iPhone XS": "vintage", "iPhone XS Max": "vintage", "iPhone 11 Pro": "vintage", "iPhone 11 Pro Max": "vintage", "iPhone X": "obsolete"}, "iPad": {"iPad 6e": "vintage", "iPad Air 3e": "vintage", "iPad Pro 10.5": "vintage", "iPad Pro 11 1re": "vintage", "iPad Pro 12.9 3e": "vintage"}, "AppleWatch": {"Apple Watch Series 3 GPS": "vintage", "Apple Watch Series 3 Nike GPS": "vintage", "Apple Watch Series 3 Cellular": "vintage", "Apple Watch Series 3 Nike Cellular": "vintage", "Apple Watch Series 3 Acier": "vintage", "Apple Watch Series 3 Hermès": "vintage", "Apple Watch Series 3 Edition": "vintage", "Apple Watch Series 4 GPS": "vintage", "Apple Watch Series 4 Cellular": "vintage", "Apple Watch Series 4 Acier": "vintage", "Apple Watch Series 5 GPS": "vintage", "Apple Watch Series 5 Nike GPS": "vintage", "Apple Watch Series 5 Cellular": "vintage", "Apple Watch Series 5 Nike Cellular": "vintage", "Apple Watch Series 5 Acier": "vintage", "Apple Watch Series 5 Hermès": "vintage", "Apple Watch Series 5 Edition Titane": "vintage", "Apple Watch Series 5 Edition Céramique": "vintage"}, "iPod": {"iPod Touch 6e": "vintage"}, "Mac": {"MacBook Pro (15-inch, 2019)": "vintage", "MacBook Pro (Retina, 15-inch, Mid 2015)": "vintage", "MacBook (Retina, 12-inch, 2017)": "vintage", "MacBook Air (Retina, 13-inch, 2019)": "vintage", "MacBook Air (Retina, 13-inch, 2020)": "vintage", "MacBook Pro (13-inch, 2019, Four Thunderbolt 3 ports)": "vintage", "MacBook Pro (13-inch, 2019, Two Thunderbolt 3 ports)": "vintage", "MacBook Pro (15-inch, Late 2016)": "obsolete", "MacBook Pro (15-inch, 2018)": "obsolete", "MacBook Pro (15-inch, 2017)": "obsolete", "MacBook Pro (13-inch, 2018, Four Thunderbolt 3 ports)": "obsolete", "MacBook Pro (13-inch, 2017, Four Thunderbolt 3 ports)": "obsolete", "MacBook Pro (13-inch, 2016, Four Thunderbolt 3 ports)": "obsolete", "MacBook Pro (13-inch, 2017, Two Thunderbolt 3 ports)": "obsolete", "MacBook Pro (13-inch, 2016, Two Thunderbolt 3 ports)": "obsolete", "MacBook Pro (Retina, 13-inch, Early 2015)": "obsolete", "MacBook (Retina, 12-inch, 2016)": "obsolete", "MacBook Air (13-inch, 2017)": "obsolete", "MacBook Air (13-inch, Early 2015)": "obsolete", "MacBook Air (11-inch, 2015)": "obsolete"}};
+const STATUS_LABELS = { vintage: 'Vintage', obsolete: 'Obsolète' };
+const STATUS_NOTES = {
+  vintage: 'Produit ancien (5-7 ans) : service possible sous réserve de disponibilité des pièces.',
+  obsolete: 'Produit obsolète (arrêté à la vente depuis plus de 7 ans) : plus de réparation matérielle, pièces non disponibles.'
+};
+function productStatus(cat, name){
+  const mp = PRODUCT_STATUS[cat];
+  return mp ? (mp[name] || null) : null;
+}
+
 const CATEGORY_LABELS = {
   iPhone:"iPhone", iPad:"iPad", Mac:"Mac", AppleWatch:"Apple Watch",
   AirPods:"AirPods", iPod:"iPod", HomePod:"HomePod", AppleTV:"Apple TV"
@@ -6817,7 +6835,10 @@ function render(){
   const model = DATA[state.category][state.modelIndex];
 
   document.getElementById('cat-value').textContent = CATEGORY_LABELS[state.category] || state.category;
-  document.getElementById('model-value').textContent = model.name;
+  const st = productStatus(state.category, model.name);
+  const mv = document.getElementById('model-value');
+  mv.innerHTML = model.name + (st
+    ? ` <span class="status-badge ${st}">${STATUS_LABELS[st]}</span>` : '');
 
   const art = state.category === 'Mac' ? macArt(model.name) : DEVICE_ART[state.category];
   const tile = document.getElementById('device-art');
@@ -6830,6 +6851,17 @@ function render(){
 
   const list = document.getElementById('price-list');
   list.innerHTML = "";
+  const panel = list.closest('.price-panel');
+  panel.classList.toggle('panel-obsolete', st === 'obsolete');
+  const prevNote = panel.querySelector('.status-note');
+  if (prevNote) prevNote.remove();
+  if (st) {
+    const note = document.createElement('div');
+    note.className = 'status-note' + (st === 'obsolete' ? ' status-note-obs' : '');
+    note.style.color = st === 'obsolete' ? 'var(--ac-red)' : '';
+    note.textContent = STATUS_NOTES[st];
+    panel.insertBefore(note, list);
+  }
   const acRate = getAcRate(state.category, model.name);
   const acMode = state.acMode || 'acplus';
   const monthlyRate = acMode === 'acone' ? 20.99 : acRate;
@@ -6838,14 +6870,19 @@ function render(){
     row.className = 'price-row';
     const isNum = typeof c.price === 'number';
     const label = FR_LABELS[c.label] || c.label;
-    const fee = (typeof c.acFee === 'number')
+    let fee = (typeof c.acFee === 'number')
       ? (c.acFee === 0
           ? '<span class="ac-fee"> / inclus</span>'
           : `<span class="ac-fee"> / €${c.acFee}</span>`) : "";
+    let priceShown = c.price;
+    if (st === 'obsolete' && isNum) {
+      priceShown = 0;
+      fee = '';
+    }
     
     // Break-even per component (global toggle)
     let be = '';
-    if (monthlyRate && isNum && typeof c.acFee === 'number') {
+    if (monthlyRate && isNum && typeof c.acFee === 'number' && st !== 'obsolete') {
       const rateStr = monthlyRate.toString().replace('.', ',');
       if (c.price > c.acFee) {
         const savings = c.price - c.acFee;
@@ -6857,7 +6894,7 @@ function render(){
     }
     
     row.innerHTML = `<div class="label">${label}</div>
-      <div class="price${isNum ? '' : ' na'}">${fmtPrice(c.price)}${fee}</div>${be}`;
+      <div class="price${isNum ? '' : ' na'}">${fmtPrice(priceShown)}${fee}</div>${be}`;
     list.appendChild(row);
   });
 }
