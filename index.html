@@ -4617,6 +4617,21 @@ const DATA = {
           "acFee": 0
         }
       ]
+    },
+    {
+      "name": "Beats Pill",
+      "components": [
+        {
+          "label": "Batterie",
+          "price": 57.50,
+          "acFee": 0
+        },
+        {
+          "label": "Porte-batterie",
+          "price": 8.36,
+          "acFee": 0
+        }
+      ]
     }
   ],
   "AppleTV": [
@@ -6495,7 +6510,10 @@ const state = { category: null, modelIndex: 0, sizeFilter: null, famFilter: null
 
 function fmtPrice(p){
   if (typeof p !== "number") return String(p);
-  return "€" + Math.round(p);
+  // Affiche les centimes seulement si le prix en a (ex: 57,50 € / 8,36 € Beats Pill)
+  const hasCents = Math.abs(p - Math.round(p)) > 0.001;
+  const v = hasCents ? p.toFixed(2).replace('.', ',') : String(Math.round(p));
+  return "€" + v;
 }
 
 function sortComponents(components){
