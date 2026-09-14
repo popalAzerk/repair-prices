@@ -6923,23 +6923,23 @@ function getAcRate(cat, name){
     if(/Air 3e|Air 4e|Air 5e/.test(name)) return null;
     if(/mini 5e|mini 6e/.test(name)) return null;
     if(/^iPad (6e|7e|8e|9e|10e)/.test(name)) return null;
-    if(/Pro 13/.test(name)) return 9.49;
-    if(/Pro 11/.test(name)) return 8.49;
-    if(/Air 13/.test(name)) return 5.99;
-    if(/Air 11/.test(name)) return 4.99;
-    if(/mini/.test(name)) return 4.49;
-    if(/A16/.test(name)) return 4.49;
+    if(/Pro 13/.test(name)) return 12.49;
+    if(/Pro 11/.test(name)) return 11.49;
+    if(/Air 13/.test(name)) return 8.49;
+    if(/Air 11/.test(name)) return 7.49;
+    if(/mini/.test(name)) return 6.49;
+    if(/A16/.test(name)) return 6.49;
     return null;
   }
   if(cat==="AppleWatch"){
     if(/Series 3|Series 4|Series 5|Series 6|Series 7/.test(name)) return null;
-    if(/Ultra|Hermès/.test(name)) return 5.49;
+    if(/Ultra|Hermès/.test(name)) return 6.99;
     if(/Acier/.test(name)) return 4.49;
-    if(/SE/.test(name)) return 2.99;
+    if(/SE/.test(name)) return 3.99;
     return 4.49;
   }
-  if(cat==="AirPods"){ return /Max/.test(name)?2.99:1.49; }
-  if(cat==="HomePod") return 0.99;
+  if(cat==="AirPods"){ if(/Max/.test(name)) return 2.99; if(/Pro/.test(name)) return 1.99; return 1.49; }
+  if(cat==="HomePod"){ if(/mini/i.test(name)) return 0.99; return 1.99; }
   if(cat==="AppleTV") return 0.99;
   if(cat==="iPod") return 1.49;
   return null;
