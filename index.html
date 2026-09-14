@@ -6697,7 +6697,7 @@ function populateFamSelect(){
     sel.appendChild(opt);
   });
   sel.value = state.famFilter || '';
-  document.getElementById('fam-value').textContent = sel.value ? sel.value : 'Tous les Mac';
+  document.getElementById('fam-value').textContent = sel.value ? sel.value : allLabel;
   sizeBox.hidden = state.category !== 'Mac' || !(state.famFilter && (state.famFilter !== 'Autres' && state.famFilter !== 'MacBook Neo'));
 }
 
@@ -7017,6 +7017,9 @@ document.getElementById('cat-select').addEventListener('change', e => {
 document.getElementById('fam-select').addEventListener('change', e => {
   state.famFilter = e.target.value || null;
   state.sizeFilter = null;
+  const cat = state.category;
+  const allLabel = cat === 'Mac' ? 'Tous les Mac' : cat === 'iPhone' ? 'Tous les iPhone' : cat === 'AppleWatch' ? 'Toutes les Watch' : 'Tous les iPad';
+  document.getElementById('fam-value').textContent = state.famFilter || allLabel;
   populateSizeSelect();
   populateModelSelect();
 });
