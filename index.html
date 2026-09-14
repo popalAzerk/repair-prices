@@ -6889,13 +6889,15 @@ function getAcRate(cat, name){
     if(/SE \(2e/.test(name)) return 7.49;
     if(/SE \(3e/.test(name)) return 7.49;
     if(/7 Plus|8 Plus/.test(name)) return 10.49;
+    if(/18 Pro Max|18 Pro/.test(name)) return 15.99;
     if(/17 Pro Max|16 Pro Max|15 Pro Max|14 Pro Max|13 Pro Max|12 Pro Max|11 Pro Max|XS Max|XS|17 Pro|16 Pro|15 Pro|14 Pro|13 Pro|12 Pro|11 Pro/.test(name)) return 14.99;
     if(name==="iPhone X") return 14.99;
-    if(/Air/.test(name)) return 14.99;
-    if(/17e|16e/.test(name)) return 9.99;
+    if(/Air/.test(name)) return 15.99;
+    if(/17e|16e/.test(name)) return 10.99;
     if(/Plus/.test(name)) return 13.49;
     if(/mini|Mini/.test(name)) return 11.99;
-    if(/17|16|15|14|13|12|11|XR/.test(name)) return 11.99;
+    if(/17|16|15/.test(name)) return 12.99;
+    if(/14|13|12|11|XR/.test(name)) return 11.99;
     if(/7|8/.test(name)) return 10.49;
     return null;
   }
@@ -6906,7 +6908,7 @@ function getAcRate(cat, name){
     if(/15/.test(n)&&/air/.test(n)) return 9.49;
     if(/13/.test(n)&&/air/.test(n)) return 8.49;
     if(/neo/.test(n)) return 5.99;
-    if(/mini/.test(n)&&!/air/.test(n)) return 5.99;
+    if(/mini/.test(n)&&!/air/.test(n)) return 4.99;
     if(/studio/.test(n)) return 6.99;
     if(/imac/.test(n)) return 6.99;
     if(/pro/.test(n)) return 11.49;
