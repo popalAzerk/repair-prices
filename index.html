@@ -2469,6 +2469,41 @@ const DATA = {
           "price": 10
         }
       ]
+    },
+    {
+      "name": "iPhone Duo",
+      "components": [
+        {
+          "label": "Écran avant",
+          "price": "Non publié",
+          "acFee": 29
+        },
+        {
+          "label": "Écran interne",
+          "price": "Non publié",
+          "acFee": 99
+        },
+        {
+          "label": "Back Glass",
+          "price": "Non publié",
+          "acFee": 29
+        },
+        {
+          "label": "Couche de protection",
+          "price": "Non publié",
+          "acFee": 19
+        },
+        {
+          "label": "Batterie",
+          "price": "Non publié",
+          "acFee": 0
+        },
+        {
+          "label": "Autres dommages",
+          "price": "Non publié",
+          "acFee": 99
+        }
+      ]
     }
   ],
   "iPad": [
@@ -3383,7 +3418,7 @@ const DATA = {
           "acFee": 0
         }
       ]
-    }
+    },
   ],
   "AppleWatch": [
     {
@@ -7188,7 +7223,7 @@ function render(){
   // Franchise AC+ pour les familles d'accessoires (pas d'abonnement AC+
   // propre : l'accessoire est couvert par l'AC+ de son appareil hôte, la
   // franchise reste due par incident — police AppleCare+ FR : Pencil/clavier 29 €).
-  if (!monthlyRate) {
+  if (!monthlyRate && !/Duo/.test(model.name)) {
     const fees = [...new Set(model.components
       .map(c => c.acFee).filter(f => typeof f === 'number' && f > 0))];
     if (fees.length && acMode === 'acplus') {
