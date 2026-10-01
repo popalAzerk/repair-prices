@@ -149,6 +149,8 @@
   .price-row .price{font-size:16px; font-weight:600; white-space:nowrap; flex:0 0 auto;}
   .price-row .price.na{color:var(--text-secondary); font-weight:400; font-size:13.5px;}
   .ac-fee{color:var(--ac-red);}
+  .price-row.fr-note{border-top:2px solid var(--ac-red);margin-top:6px;padding-top:12px;}
+  .price-row.fr-note .label{font-weight:600;}
   /* Own full-width line so it never competes with the label for horizontal space. */
   .ac-note{
     flex:1 0 100%; text-align:right; margin-top:3px;
@@ -7185,6 +7187,21 @@ function render(){
       <div class="price${isNum ? '' : ' na'}">${fmtPrice(c.price)}${fee}</div>${be}`;
     list.appendChild(row);
   });
+
+  // Franchise AC+ pour les familles d'accessoires (pas d'abonnement AC+
+  // propre : l'accessoire est couvert par l'AC+ de son appareil hôte, la
+  // franchise reste due par incident — police AppleCare+ FR : Pencil/clavier 29 €).
+  if (!monthlyRate) {
+    const fees = [...new Set(model.components
+      .map(c => c.acFee).filter(f => typeof f === 'number' && f > 0))];
+    if (fees.length && acMode === 'acplus') {
+      const note = document.createElement('div');
+      note.className = 'price-row fr-note';
+      note.innerHTML = `<div class="label">Franchise AC+</div>
+        <div class="price">€${fees.join(' / €')}<span class="ac-fee"> / par incident</span></div>`;
+      list.appendChild(note);
+    }
+  }
 
   // Frais « Vol ou perte » (AppleCare+ avec couverture perte et vol — option:
   // iPhone/iPad 129 €, Apple Watch 119 € — 2 déclarations/an, source apple.com/fr/applecare)
