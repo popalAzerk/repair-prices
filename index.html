@@ -6863,6 +6863,7 @@ function macFamOf(name){
 
 
 function iphoneFamOf(name){
+  if (/^iPhone Duo/i.test(name)) return 'iPhone Duo';
   if (/^iPhone Air/i.test(name)) return 'iPhone Air';
   if (/^Accessoires/i.test(name)) return 'Accessoires iPhone';
   if (/^iPhone\s*\d+\s*Pro/i.test(name)) return 'iPhone Pro';
@@ -6898,7 +6899,7 @@ function populateFamSelect(){
     if (!state.famFilter) state.famFilter = 'MacBook Pro';
   } else if (state.category === 'iPhone'){
     // Ordre demandé : Air en 1er, Pro, Numéro, mini, Plus, Accessoires en dernier
-    fams = ['iPhone Air', 'iPhone Pro', 'iPhone', 'iPhone mini', 'iPhone Plus', 'Accessoires iPhone']
+    fams = ['iPhone Duo', 'iPhone Air', 'iPhone Pro', 'iPhone', 'iPhone mini', 'iPhone Plus', 'Accessoires iPhone']
       .filter(f => DATA.iPhone.some(m => iphoneFamOf(m.name) === f));
     famOf = iphoneFamOf; allLabel = 'Tous les iPhone';
     if (!state.famFilter) state.famFilter = 'iPhone Air';
